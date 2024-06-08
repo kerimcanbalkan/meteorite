@@ -1,10 +1,16 @@
-import { makePlanet } from "./entities";
+import { makePlanet, makeAstroid, spawnAstroid } from "./entities";
 import { k } from "./kaplayCtx";
 
 k.scene("game", () => {
-	k.loadSprite("space", "sprites/space.png")
-	k.loadSprite("stars", "sprites/test.png")
-	k.loadSprite("space", "sprites/space.png")
+	k.loadSprite("stars", "sprites/test.png");
+	k.loadSprite("space", "sprites/space.png");
+	k.loadSprite("asteroid", "sprites/animated_asteroid.png", {
+		sliceX: 16,
+		sliceY: 2,
+		anims: {
+			"roll": { from: 0, to: 31, speed: 5, loop: true }
+		}
+	});
 
 	k.loadSprite("planet", "sprites/planet.png", {
 		sliceX: 20,
@@ -17,10 +23,22 @@ k.scene("game", () => {
 
 	k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
 
-	const planet = makePlanet(k, (k.width() / 2), k.height() / 2);
+
+	const planet = makePlanet(k, "planet", (k.width() / 2), k.height() / 2);
+
+	spawnAstroid(k, planet, "asteroid", "roll", 1);
+
+
+	k.onCollide("astroid", "planet", (astroid) => {
+		k.destroy(astroid);
+	})
+
+	k.onClick("astroid", (astroid) => {
+		k.destroy(astroid);
+	})
+
 
 	k.add(planet);
-
 
 });
 
