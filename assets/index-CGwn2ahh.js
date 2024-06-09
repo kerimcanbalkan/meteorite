@@ -61,9 +61,16 @@ function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
   return astroid;
 }
 function spawnAsteroid(k2, planet, sprite, anim, getScore) {
-  let spawnInterval = 2;
+  let spawnInterval = 1.5;
+  let mobile = false;
+  if (k2.width() < 640) {
+    mobile = true;
+  }
   const spawn = () => {
-    const scale = k2.rand(0.3, 1.5);
+    let scale = k2.rand(0.45, 1.5);
+    if (k2.width() < 640) {
+      scale = k2.rand(0.5, 1);
+    }
     const offscreenPositions = [
       { x: k2.rand(0, k2.width()), y: -50 },
       // Top
@@ -78,6 +85,9 @@ function spawnAsteroid(k2, planet, sprite, anim, getScore) {
     const ast = makeAsteroid(k2, planet, sprite, anim, scale, randomPos.x, randomPos.y);
     k2.add(ast);
     const score = getScore();
+    if (mobile) {
+      spawnInterval = Math.max(0.7, 2 - score / 100);
+    }
     spawnInterval = Math.max(0.5, 2 - score / 100);
     k2.wait(spawnInterval, spawn);
   };
@@ -95,13 +105,17 @@ function hit(k2, asteroid, planet) {
   k2.destroy(asteroid);
 }
 function makePlanet(k2, sprite, posX, posY, opacity) {
+  let scale = 2;
+  if (k2.width() < 640) {
+    scale = 1.3;
+  }
   const planet = k2.make([
     k2.sprite(sprite, { anim: "turn" }),
     k2.area(),
     k2.body(),
     k2.pos(posX, posY),
     k2.health(100),
-    k2.scale(2),
+    k2.scale(scale),
     k2.opacity(opacity),
     k2.anchor("center"),
     { maxHp: 100, previousHp: 100 },
@@ -3986,7 +4000,7 @@ const k = zo({
 function gameoverText(k2, score, font) {
   let textsize = 60;
   if (k2.width() <= 810) {
-    textsize = 35;
+    textsize = 30;
   }
   const gameover = k2.make([
     k2.pos(k2.width() / 2, k2.height() / 2),
@@ -4000,14 +4014,6 @@ function gameoverText(k2, score, font) {
     k2.pos(0, 40),
     k2.text("Score: " + score, {
       size: textsize / 1.5,
-      font
-    }),
-    k2.anchor("center")
-  ]);
-  gameover.add([
-    k2.pos(0, 80),
-    k2.text("Tap the screen to play again.", {
-      size: textsize / 2,
       font
     }),
     k2.anchor("center")
@@ -4037,19 +4043,58 @@ function makeHealthbar(k2, planet) {
     k2.anchor("left")
   ]);
   planet.on("hurt", () => {
-    const newWidth = planet.hp() / 100 * 396;
+    const newWidth = planet.hp() / 100 * width;
     healthDisplay.width = newWidth;
   });
   return healthContainer;
 }
+function makeRestartButton(k2, font) {
+  let width = 150;
+  let height = 50;
+  let textsize = 40;
+  let posY = k2.height() - k2.height() / 3.2;
+  if (k2.width() < 640) {
+    width = 80;
+    height = 30;
+    textsize = 23;
+    posY = k2.height() - k2.height() / 2.8;
+  }
+  const button = k2.make([
+    k2.rect(width, height),
+    k2.color(0, 0, 0),
+    k2.area(),
+    k2.outline(2, k2.rgb(255, 255, 255)),
+    k2.anchor("center"),
+    k2.fixed(),
+    k2.pos(k2.width() / 2, posY)
+  ]);
+  const buttonText = button.add([
+    k2.text("Restart", {
+      size: textsize,
+      font,
+      align: "center"
+    }),
+    k2.anchor("center"),
+    k2.pos(4, -4)
+  ]);
+  button.onHover(() => {
+    button.use(k2.color(255, 255, 255));
+    buttonText.use(k2.color(0, 0, 0));
+  });
+  button.onHoverEnd(() => {
+    button.use(k2.color(0, 0, 0));
+    buttonText.use(k2.color(255, 255, 255));
+  });
+  return button;
+}
 function makeScoreBoard(k2, font) {
   let textsize = 30;
-  let posX = k2.width() - 100;
-  let posY = 50;
+  let posX = k2.width() - 20;
+  let posY = k2.height() - 40;
   if (k2.width() <= 810) {
     textsize = 20;
-    posX = k2.width() - 20;
-    posY = k2.height() - 20;
+    posX = posX + 20;
+    posY = posY + 20;
   }
   const scoreBoard = k2.make([
     k2.pos(posX, posY),
@@ -4066,7 +4111,7 @@ function makeScoreBoard(k2, font) {
 function makeWelcome(k2, font) {
   let textsize = 60;
   if (k2.width() <= 810) {
-    textsize = 40;
+    textsize = 35;
   }
   const welcome = k2.make([
     k2.pos(k2.width() / 2, k2.height() / 2),
@@ -4143,10 +4188,12 @@ k.scene("gameover", () => {
   k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
   const gameover = gameoverText(k, finalScore, "monogram");
+  const restartButton = makeRestartButton(k, "monogram");
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
   k.add(planet);
   k.add(gameover);
-  k.onClick(() => {
+  k.add(restartButton);
+  restartButton.onClick(() => {
     k.go("game");
   });
 });
