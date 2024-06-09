@@ -4206,4 +4206,4 @@ k.scene("welcome", () => {
     k.go("game");
   });
 });
-k.go("gameover");
+k.go("welcome");
