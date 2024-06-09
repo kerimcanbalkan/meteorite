@@ -5,7 +5,7 @@ export function gameoverText(k: KaboomCtx, score: number, font: string) {
 	let textsize = 60;
 
 	if (k.width() <= 810) {
-		textsize = 35;
+		textsize = 30;
 	}
 
 	const gameover = k.make([
@@ -26,13 +26,5 @@ export function gameoverText(k: KaboomCtx, score: number, font: string) {
 		k.anchor("center")
 	]);
 
-	gameover.add([
-		k.pos(0, 80),
-		k.text("Tap the screen to play again.", {
-			size: textsize / 2,
-			font: font
-		}),
-		k.anchor("center")
-	]);
 	return gameover;
 }

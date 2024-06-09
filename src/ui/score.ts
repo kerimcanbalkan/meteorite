@@ -3,13 +3,13 @@ import { KaboomCtx } from "kaplay";
 export function makeScoreBoard(k: KaboomCtx, font: string) {
 
 	let textsize = 30;
-	let posX = k.width() - 100;
-	let posY = 50;
+	let posX = k.width() - 20;
+	let posY = k.height() - 40;
 
 	if (k.width() <= 810) {
 		textsize = 20;
-		posX = k.width() - 20;
-		posY = k.height() - 20;
+		posX = posX + 20;
+		posY = posY + 20;
 	}
 
 	const scoreBoard = k.make([

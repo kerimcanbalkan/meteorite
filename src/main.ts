@@ -3,6 +3,7 @@ import { makePlanet } from "./entities/planet";
 import { k } from "./kaplayCtx";
 import { gameoverText } from "./ui/gameoverText";
 import { makeHealthbar } from "./ui/healthbar";
+import { makeRestartButton } from "./ui/restartButton";
 import { makeScoreBoard } from "./ui/score";
 import { makeWelcome } from "./ui/welcome";
 
@@ -64,15 +65,18 @@ k.scene("gameover", () => {
 
 	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
 	const gameover = gameoverText(k, finalScore, "monogram");
+	const restartButton = makeRestartButton(k, "monogram");
 
 
 	k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
 	k.add(planet)
 	k.add(gameover);
+	k.add(restartButton);
 
-	k.onClick(() => {
+	restartButton.onClick(() => {
 		k.go("game");
 	})
+
 })
 
 k.scene("welcome", () => {

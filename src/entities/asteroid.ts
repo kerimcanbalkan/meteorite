@@ -18,10 +18,19 @@ export function makeAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: string
 	return astroid;
 }
 export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: string, anim: string, getScore: () => number) {
-	let spawnInterval = 2;
+	let spawnInterval = 1.5;
+	let mobile = false;
+
+	if (k.width() < 640) {
+		mobile = true;
+	}
 
 	const spawn = () => {
-		const scale = k.rand(0.3, 1.5);
+		let scale = k.rand(0.45, 1.5);
+
+		if (k.width() < 640) {
+			scale = k.rand(0.5, 1);
+		}
 
 		const offscreenPositions = [
 			{ x: k.rand(0, k.width()), y: -50 }, // Top
@@ -37,6 +46,10 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 
 		// Update the spawn interval based on the score
 		const score = getScore();
+		if (mobile) {
+
+			spawnInterval = Math.max(0.7, 2 - score / 100); // Decrease interval, minimum 0.5 seconds
+		}
 		spawnInterval = Math.max(0.5, 2 - score / 100); // Decrease interval, minimum 0.5 seconds
 
 		// Schedule the next asteroid spawn

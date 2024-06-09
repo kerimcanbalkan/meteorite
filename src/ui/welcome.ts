@@ -5,7 +5,7 @@ export function makeWelcome(k: KaboomCtx, font: string) {
 	let textsize = 60;
 
 	if (k.width() <= 810) {
-		textsize = 40;
+		textsize = 35;
 	}
 
 	const welcome = k.make([
