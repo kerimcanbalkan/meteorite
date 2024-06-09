@@ -24,6 +24,14 @@ k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
 		"turn": { from: 0, to: 99, speed: 10, loop: true }
 	}
 })
+
+k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
+	sliceX: 20,
+	sliceY: 5,
+	anims: {
+		"turn": { from: 0, to: 99, speed: 10, loop: true }
+	}
+})
 k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 
 k.scene("game", () => {
@@ -54,7 +62,7 @@ k.scene("game", () => {
 });
 
 k.scene("gameover", () => {
-	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
+	const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
 	const gameover = gameoverText(k, finalScore, "monogram");
 	const restartButton = makeRestartButton(k, "monogram");
 
@@ -83,4 +91,4 @@ k.scene("welcome", () => {
 	});
 })
 
-k.go("welcome");
+k.go("gameover");

@@ -1,9 +1,9 @@
 import { KaboomCtx } from "kaplay";
 
 export function makeRestartButton(k: KaboomCtx, font: string) {
-	let width = 150;
-	let height = 50;
-	let textsize = 40;
+	let width = 120;
+	let height = 40;
+	let textsize = 30;
 	let posY = k.height() - k.height() / 3.2;
 
 	if (k.width() < 640) {
@@ -27,21 +27,22 @@ export function makeRestartButton(k: KaboomCtx, font: string) {
 		k.text("Restart", {
 			size: textsize,
 			font: font,
+			width: width,
 			align: "center"
 		}),
 		k.anchor("center"),
-		k.pos(4, -4)
+		k.pos(0, -4)
 	]);
 
 
 	button.onHover(() => {
-		button.use(k.color(255, 255, 255)); // Change button color to white
+		button.use(k.color(255, 255, 255));
 		buttonText.use(k.color(0, 0, 0));
 
 	});
 
 	button.onHoverEnd(() => {
-		button.use(k.color(0, 0, 0)); // Change button color to white
+		button.use(k.color(0, 0, 0));
 		buttonText.use(k.color(255, 255, 255));
 
 	});
