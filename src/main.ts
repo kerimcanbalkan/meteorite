@@ -8,24 +8,25 @@ import { makeScoreBoard } from "./ui/score";
 import { makeWelcome } from "./ui/welcome";
 
 let finalScore = 0;
+k.loadSprite("space", "/save-the-planet/sprites/space.png");
+k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
+	sliceX: 16,
+	sliceY: 2,
+	anims: {
+		"roll": { from: 0, to: 31, speed: 5, loop: true }
+	}
+});
+
+k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
+	sliceX: 20,
+	sliceY: 5,
+	anims: {
+		"turn": { from: 0, to: 99, speed: 10, loop: true }
+	}
+})
+k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 
 k.scene("game", () => {
-	k.loadSprite("space", "/save-the-planet/sprites/space.png");
-	k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
-		sliceX: 16,
-		sliceY: 2,
-		anims: {
-			"roll": { from: 0, to: 31, speed: 5, loop: true }
-		}
-	});
-	k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
-		sliceX: 20,
-		sliceY: 5,
-		anims: {
-			"turn": { from: 0, to: 99, speed: 10, loop: true }
-		}
-	})
-	k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 
 	const planet = makePlanet(k, "planet", (k.width() / 2), k.height() / 2, 1);
 	const health = makeHealthbar(k, planet);
@@ -53,16 +54,6 @@ k.scene("game", () => {
 });
 
 k.scene("gameover", () => {
-	k.loadSprite("space", "/save-the-planet/sprites/space.png");
-	k.loadSprite("planet", "/save-the-planet/sprites/dry-planet.png", {
-		sliceX: 20,
-		sliceY: 5,
-		anims: {
-			"turn": { from: 0, to: 99, speed: 10, loop: true }
-		}
-	})
-	k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
-
 	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
 	const gameover = gameoverText(k, finalScore, "monogram");
 	const restartButton = makeRestartButton(k, "monogram");
@@ -80,16 +71,6 @@ k.scene("gameover", () => {
 })
 
 k.scene("welcome", () => {
-	k.loadSprite("space", "/save-the-planet/sprites/space.png");
-	k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
-		sliceX: 20,
-		sliceY: 5,
-		anims: {
-			"turn": { from: 0, to: 99, speed: 10, loop: true }
-		}
-	})
-	k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
-
 	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
 	const welcome = makeWelcome(k, "monogram");
 
