@@ -7,7 +7,7 @@ export function makeScoreBoard(k: KaboomCtx, font: string) {
 	let posY = 50;
 
 	if (k.width() <= 810) {
-		textsize = 40;
+		textsize = 20;
 		posX = k.width() - 20;
 		posY = k.height() - 20;
 	}
@@ -15,7 +15,7 @@ export function makeScoreBoard(k: KaboomCtx, font: string) {
 	const scoreBoard = k.make([
 		k.pos(posX, posY),
 		k.text("Score: 0", {
-			size: 30,
+			size: textsize,
 			width: 200,
 			font: font
 		}),
