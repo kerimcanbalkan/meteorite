@@ -73,7 +73,6 @@ k.scene("gameover", () => {
 	k.add(gameover);
 
 	k.onClick(() => {
-		k.debug.log(finalScore)
 		k.go("game");
 	})
 })
