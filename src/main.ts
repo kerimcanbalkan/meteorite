@@ -91,4 +91,4 @@ k.scene("welcome", () => {
 	});
 })
 
-k.go("gameover");
+k.go("welcome");
