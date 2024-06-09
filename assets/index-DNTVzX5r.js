@@ -4049,9 +4049,9 @@ function makeHealthbar(k2, planet) {
   return healthContainer;
 }
 function makeRestartButton(k2, font) {
-  let width = 150;
-  let height = 50;
-  let textsize = 40;
+  let width = 120;
+  let height = 40;
+  let textsize = 30;
   let posY = k2.height() - k2.height() / 3.2;
   if (k2.width() < 640) {
     width = 80;
@@ -4072,10 +4072,11 @@ function makeRestartButton(k2, font) {
     k2.text("Restart", {
       size: textsize,
       font,
+      width,
       align: "center"
     }),
     k2.anchor("center"),
-    k2.pos(4, -4)
+    k2.pos(0, -4)
   ]);
   button.onHover(() => {
     button.use(k2.color(255, 255, 255));
@@ -4140,23 +4141,30 @@ function makeWelcome(k2, font) {
   return welcome;
 }
 let finalScore = 0;
+k.loadSprite("space", "/save-the-planet/sprites/space.png");
+k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
+  sliceX: 16,
+  sliceY: 2,
+  anims: {
+    "roll": { from: 0, to: 31, speed: 5, loop: true }
+  }
+});
+k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
+  sliceX: 20,
+  sliceY: 5,
+  anims: {
+    "turn": { from: 0, to: 99, speed: 10, loop: true }
+  }
+});
+k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
+  sliceX: 20,
+  sliceY: 5,
+  anims: {
+    "turn": { from: 0, to: 99, speed: 10, loop: true }
+  }
+});
+k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 k.scene("game", () => {
-  k.loadSprite("space", "/save-the-planet/sprites/space.png");
-  k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
-    sliceX: 16,
-    sliceY: 2,
-    anims: {
-      "roll": { from: 0, to: 31, speed: 5, loop: true }
-    }
-  });
-  k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
-    sliceX: 20,
-    sliceY: 5,
-    anims: {
-      "turn": { from: 0, to: 99, speed: 10, loop: true }
-    }
-  });
-  k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 1);
   const health = makeHealthbar(k, planet);
   const scoreBoard = makeScoreBoard(k, "monogram");
@@ -4177,16 +4185,7 @@ k.scene("game", () => {
   k.add(planet);
 });
 k.scene("gameover", () => {
-  k.loadSprite("space", "/save-the-planet/sprites/space.png");
-  k.loadSprite("planet", "/save-the-planet/sprites/dry-planet.png", {
-    sliceX: 20,
-    sliceY: 5,
-    anims: {
-      "turn": { from: 0, to: 99, speed: 10, loop: true }
-    }
-  });
-  k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
-  const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
+  const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
   const gameover = gameoverText(k, finalScore, "monogram");
   const restartButton = makeRestartButton(k, "monogram");
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
@@ -4198,15 +4197,6 @@ k.scene("gameover", () => {
   });
 });
 k.scene("welcome", () => {
-  k.loadSprite("space", "/save-the-planet/sprites/space.png");
-  k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
-    sliceX: 20,
-    sliceY: 5,
-    anims: {
-      "turn": { from: 0, to: 99, speed: 10, loop: true }
-    }
-  });
-  k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
   const welcome = makeWelcome(k, "monogram");
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
@@ -4216,4 +4206,4 @@ k.scene("welcome", () => {
     k.go("game");
   });
 });
-k.go("welcome");
+k.go("gameover");
