@@ -1,8 +1,16 @@
 import { GameObj, KaboomCtx } from "kaplay";
 
 export function makeHealthbar(k: KaboomCtx, planet: GameObj) {
+
+	let width = 400;
+	let height = 20;
+
+	if (k.width() < 640) {
+		width = 300;
+		height = 10;
+	}
 	const healthContainer = k.make([
-		k.rect(400, 20),
+		k.rect(width, height),
 		k.color(0, 0, 0),
 		k.area(),
 		k.anchor("center"),
@@ -12,8 +20,8 @@ export function makeHealthbar(k: KaboomCtx, planet: GameObj) {
 	]);
 
 	const healthDisplay = healthContainer.add([
-		k.rect(396, 16),
-		k.pos(-198, 0),
+		k.rect(width - 4, height - 4),
+		k.pos(-(width / 2 - 2), 0),
 		k.color(255, 255, 255),
 		k.anchor("left"),
 	]);
