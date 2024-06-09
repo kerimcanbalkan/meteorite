@@ -4047,7 +4047,7 @@ function makeScoreBoard(k2, font) {
   let posX = k2.width() - 100;
   let posY = 50;
   if (k2.width() <= 810) {
-    textsize = 40;
+    textsize = 20;
     posX = k2.width() - 20;
     posY = k2.height() - 20;
   }
