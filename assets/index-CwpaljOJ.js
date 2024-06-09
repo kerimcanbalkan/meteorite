@@ -3984,10 +3984,14 @@ const k = zo({
   background: [0, 0, 0]
 });
 function gameoverText(k2, score, font) {
+  let textsize = 60;
+  if (k2.width() <= 810) {
+    textsize = 35;
+  }
   const gameover = k2.make([
     k2.pos(k2.width() / 2, k2.height() / 2),
     k2.text("Game over Planet is dead now!", {
-      size: 60,
+      size: textsize,
       font
     }),
     k2.anchor("center")
@@ -3995,7 +3999,7 @@ function gameoverText(k2, score, font) {
   gameover.add([
     k2.pos(0, 40),
     k2.text("Score: " + score, {
-      size: 40,
+      size: textsize / 1.5,
       font
     }),
     k2.anchor("center")
@@ -4003,7 +4007,7 @@ function gameoverText(k2, score, font) {
   gameover.add([
     k2.pos(0, 80),
     k2.text("Tap the screen to play again.", {
-      size: 25,
+      size: textsize / 2,
       font
     }),
     k2.anchor("center")
@@ -4011,8 +4015,14 @@ function gameoverText(k2, score, font) {
   return gameover;
 }
 function makeHealthbar(k2, planet) {
+  let width = 400;
+  let height = 20;
+  if (k2.width() < 640) {
+    width = 300;
+    height = 10;
+  }
   const healthContainer = k2.make([
-    k2.rect(400, 20),
+    k2.rect(width, height),
     k2.color(0, 0, 0),
     k2.area(),
     k2.anchor("center"),
@@ -4021,8 +4031,8 @@ function makeHealthbar(k2, planet) {
     k2.fixed()
   ]);
   const healthDisplay = healthContainer.add([
-    k2.rect(396, 16),
-    k2.pos(-198, 0),
+    k2.rect(width - 4, height - 4),
+    k2.pos(-(width / 2 - 2), 0),
     k2.color(255, 255, 255),
     k2.anchor("left")
   ]);
@@ -4033,10 +4043,18 @@ function makeHealthbar(k2, planet) {
   return healthContainer;
 }
 function makeScoreBoard(k2, font) {
+  let textsize = 30;
+  let posX = k2.width() - 100;
+  let posY = 50;
+  if (k2.width() <= 810) {
+    textsize = 40;
+    posX = k2.width() - 20;
+    posY = k2.height() - 20;
+  }
   const scoreBoard = k2.make([
-    k2.pos(k2.width() - 100, 50),
+    k2.pos(posX, posY),
     k2.text("Score: 0", {
-      size: 30,
+      size: textsize,
       width: 200,
       font
     }),
@@ -4046,10 +4064,14 @@ function makeScoreBoard(k2, font) {
   return scoreBoard;
 }
 function makeWelcome(k2, font) {
+  let textsize = 60;
+  if (k2.width() <= 810) {
+    textsize = 40;
+  }
   const welcome = k2.make([
     k2.pos(k2.width() / 2, k2.height() / 2),
     k2.text("Asteroids are approaching!", {
-      size: 60,
+      size: textsize,
       font
     }),
     k2.anchor("center")
@@ -4057,7 +4079,7 @@ function makeWelcome(k2, font) {
   welcome.add([
     k2.pos(0, 40),
     k2.text("Click to destroy the asteroids.", {
-      size: 40,
+      size: textsize / 1.5,
       font
     }),
     k2.anchor("center")
@@ -4065,7 +4087,7 @@ function makeWelcome(k2, font) {
   welcome.add([
     k2.pos(0, 120),
     k2.text("Tap the screen to embark on your mission.", {
-      size: 25,
+      size: textsize / 2,
       font
     }),
     k2.anchor("center")
@@ -4074,23 +4096,22 @@ function makeWelcome(k2, font) {
 }
 let finalScore = 0;
 k.scene("game", () => {
-  k.loadSprite("stars", "sprites/test.png");
-  k.loadSprite("space", "sprites/space.png");
-  k.loadSprite("asteroid", "sprites/animated_asteroid.png", {
+  k.loadSprite("space", "save-the-planet/sprites/space.png");
+  k.loadSprite("asteroid", "save-the-planet/sprites/animated_asteroid.png", {
     sliceX: 16,
     sliceY: 2,
     anims: {
       "roll": { from: 0, to: 31, speed: 5, loop: true }
     }
   });
-  k.loadSprite("planet", "sprites/planet.png", {
+  k.loadSprite("planet", "save-the-planet/sprites/planet.png", {
     sliceX: 20,
     sliceY: 5,
     anims: {
       "turn": { from: 0, to: 99, speed: 10, loop: true }
     }
   });
-  k.loadFont("monogram", "fonts/monogram.ttf");
+  k.loadFont("monogram", "save-the-planet/fonts/monogram.ttf");
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 1);
   const health = makeHealthbar(k, planet);
   const scoreBoard = makeScoreBoard(k, "monogram");
@@ -4111,37 +4132,34 @@ k.scene("game", () => {
   k.add(planet);
 });
 k.scene("gameover", () => {
-  k.loadSprite("stars", "sprites/test.png");
-  k.loadSprite("space", "sprites/space.png");
-  k.loadSprite("planet", "sprites/dry-planet.png", {
+  k.loadSprite("space", "save-the-planet/sprites/space.png");
+  k.loadSprite("planet", "save-the-planet/sprites/dry-planet.png", {
     sliceX: 20,
     sliceY: 5,
     anims: {
       "turn": { from: 0, to: 99, speed: 10, loop: true }
     }
   });
-  k.loadFont("monogram", "fonts/monogram.ttf");
+  k.loadFont("monogram", "save-the-planet/fonts/monogram.ttf");
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
   const gameover = gameoverText(k, finalScore, "monogram");
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
   k.add(planet);
   k.add(gameover);
   k.onClick(() => {
-    k.debug.log(finalScore);
     k.go("game");
   });
 });
 k.scene("welcome", () => {
-  k.loadSprite("stars", "sprites/test.png");
-  k.loadSprite("space", "sprites/space.png");
-  k.loadSprite("planet", "sprites/planet.png", {
+  k.loadSprite("space", "save-the-planet/sprites/space.png");
+  k.loadSprite("planet", "save-the-planet/sprites/planet.png", {
     sliceX: 20,
     sliceY: 5,
     anims: {
       "turn": { from: 0, to: 99, speed: 10, loop: true }
     }
   });
-  k.loadFont("monogram", "fonts/monogram.ttf");
+  k.loadFont("monogram", "save-the-planet/fonts/monogram.ttf");
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
   const welcome = makeWelcome(k, "monogram");
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
