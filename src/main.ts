@@ -71,10 +71,10 @@ k.scene("gameover", () => {
 	updateHighscore(finalScore);
 
 
+	k.add(restartButton);
 	k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
 	k.add(planet)
 	k.add(gameover);
-	k.add(restartButton);
 
 	restartButton.onClick(() => {
 		k.go("game");
