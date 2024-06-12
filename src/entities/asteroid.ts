@@ -26,10 +26,10 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 	}
 
 	const spawn = () => {
-		let scale = k.rand(0.45, 1.5);
+		let scale = k.rand(0.45, 1.7);
 
 		if (k.width() < 640) {
-			scale = k.rand(0.5, 1);
+			scale = k.rand(0.5, 1.2);
 		}
 
 		const offscreenPositions = [
@@ -47,8 +47,7 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 		// Update the spawn interval based on the score
 		const score = getScore();
 		if (mobile) {
-
-			spawnInterval = Math.max(0.7, 2 - score / 100); // Decrease interval, minimum 0.5 seconds
+			spawnInterval = Math.max(0.7, 2 - score / 100); // Decrease interval, minimum 0.7 seconds
 		}
 		spawnInterval = Math.max(0.5, 2 - score / 100); // Decrease interval, minimum 0.5 seconds
 
@@ -69,6 +68,7 @@ export function destroyAsteroid(k: KaboomCtx, asteroid: GameObj, score: ScoreBoa
 
 export function hit(k: KaboomCtx, asteroid: GameObj, planet: GameObj) {
 	const damage = asteroid.scale.x * 20;
+	k.shake(damage);
 	planet.hurt(damage);
 	k.destroy(asteroid);
 }

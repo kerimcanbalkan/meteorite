@@ -12,7 +12,7 @@ export function makePlanet(k: KaboomCtx, sprite: string, posX: number, posY: num
 		k.area(),
 		k.body(),
 		k.pos(posX, posY),
-		k.health(100),
+		k.health(150),
 		k.scale(scale),
 		k.opacity(opacity),
 		k.anchor("center"),

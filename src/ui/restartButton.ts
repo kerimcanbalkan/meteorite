@@ -27,11 +27,10 @@ export function makeRestartButton(k: KaboomCtx, font: string) {
 		k.text("Restart", {
 			size: textsize,
 			font: font,
-			width: width,
 			align: "center"
 		}),
 		k.anchor("center"),
-		k.pos(0, -4)
+		k.pos(0, 0)
 	]);
 
 

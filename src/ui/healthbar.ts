@@ -27,7 +27,7 @@ export function makeHealthbar(k: KaboomCtx, planet: GameObj) {
 	]);
 
 	planet.on("hurt", () => {
-		const newWidth = (planet.hp() / 100) * width;
+		const newWidth = (planet.hp() / 150) * width;
 		healthDisplay.width = newWidth;
 	})
 
