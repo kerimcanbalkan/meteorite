@@ -67,9 +67,9 @@ function spawnAsteroid(k2, planet, sprite, anim, getScore) {
     mobile = true;
   }
   const spawn = () => {
-    let scale = k2.rand(0.45, 1.5);
+    let scale = k2.rand(0.45, 1.7);
     if (k2.width() < 640) {
-      scale = k2.rand(0.5, 1);
+      scale = k2.rand(0.5, 1.2);
     }
     const offscreenPositions = [
       { x: k2.rand(0, k2.width()), y: -50 },
@@ -101,6 +101,7 @@ function destroyAsteroid(k2, asteroid, score) {
 }
 function hit(k2, asteroid, planet) {
   const damage = asteroid.scale.x * 20;
+  k2.shake(damage);
   planet.hurt(damage);
   k2.destroy(asteroid);
 }
@@ -114,7 +115,7 @@ function makePlanet(k2, sprite, posX, posY, opacity) {
     k2.area(),
     k2.body(),
     k2.pos(posX, posY),
-    k2.health(100),
+    k2.health(150),
     k2.scale(scale),
     k2.opacity(opacity),
     k2.anchor("center"),
@@ -4059,7 +4060,7 @@ function makeHealthbar(k2, planet) {
     k2.anchor("left")
   ]);
   planet.on("hurt", () => {
-    const newWidth = planet.hp() / 100 * width;
+    const newWidth = planet.hp() / 150 * width;
     healthDisplay.width = newWidth;
   });
   return healthContainer;
@@ -4109,11 +4110,10 @@ function makeRestartButton(k2, font) {
     k2.text("Restart", {
       size: textsize,
       font,
-      width,
       align: "center"
     }),
     k2.anchor("center"),
-    k2.pos(0, -4)
+    k2.pos(0, 0)
   ]);
   button.onHover(() => {
     button.use(k2.color(255, 255, 255));
@@ -4228,10 +4228,10 @@ k.scene("gameover", () => {
   const gameover = gameoverText(k, finalScore, "monogram");
   const restartButton = makeRestartButton(k, "monogram");
   updateHighscore(finalScore);
+  k.add(restartButton);
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
   k.add(planet);
   k.add(gameover);
-  k.add(restartButton);
   restartButton.onClick(() => {
     k.go("game");
   });
