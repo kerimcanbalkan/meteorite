@@ -1,8 +1,10 @@
 import { destroyAsteroid, hit, spawnAsteroid } from "./entities/asteroid";
 import { makePlanet } from "./entities/planet";
+import { updateHighscore } from "./entities/utils";
 import { k } from "./kaplayCtx";
 import { gameoverText } from "./ui/gameoverText";
 import { makeHealthbar } from "./ui/healthbar";
+import { makeHighScore } from "./ui/highScore";
 import { makeRestartButton } from "./ui/restartButton";
 import { makeScoreBoard } from "./ui/score";
 import { makeWelcome } from "./ui/welcome";
@@ -39,7 +41,7 @@ k.scene("game", () => {
 	const planet = makePlanet(k, "planet", (k.width() / 2), k.height() / 2, 1);
 	const health = makeHealthbar(k, planet);
 	const scoreBoard = makeScoreBoard(k, "monogram");
-
+	const highscore = makeHighScore(k, "monogram");
 
 	k.onCollide("astroid", "planet", (asteroid, planet) => {
 		hit(k, asteroid, planet);
@@ -58,6 +60,7 @@ k.scene("game", () => {
 	k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
 	k.add(health);
 	k.add(scoreBoard);
+	k.add(highscore)
 	k.add(planet);
 });
 
@@ -65,6 +68,7 @@ k.scene("gameover", () => {
 	const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
 	const gameover = gameoverText(k, finalScore, "monogram");
 	const restartButton = makeRestartButton(k, "monogram");
+	updateHighscore(finalScore);
 
 
 	k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
