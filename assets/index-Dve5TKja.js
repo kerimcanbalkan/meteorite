@@ -4113,7 +4113,7 @@ function makeRestartButton(k2, font) {
       align: "center"
     }),
     k2.anchor("center"),
-    k2.pos(0, 0)
+    k2.pos(0, -textsize / 10)
   ]);
   button.onHover(() => {
     button.use(k2.color(255, 255, 255));
