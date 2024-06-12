@@ -123,6 +123,22 @@ function makePlanet(k2, sprite, posX, posY, opacity) {
   ]);
   return planet;
 }
+function getHighScore() {
+  const highscoreStr = localStorage.getItem("highscore");
+  if (highscoreStr) {
+    return JSON.parse(highscoreStr);
+  } else {
+    const initialHighscore = 0;
+    localStorage.setItem("highscore", JSON.stringify(initialHighscore));
+    return initialHighscore;
+  }
+}
+function updateHighscore(newScore) {
+  const currentHighscore = getHighScore();
+  if (newScore > currentHighscore) {
+    localStorage.setItem("highscore", JSON.stringify(newScore));
+  }
+}
 var yi = Object.defineProperty;
 var i = (n, e) => yi(n, "name", { value: e, configurable: true });
 var gr = (() => {
@@ -4048,6 +4064,27 @@ function makeHealthbar(k2, planet) {
   });
   return healthContainer;
 }
+function makeHighScore(k2, font) {
+  const highscore = getHighScore();
+  let textsize = 30;
+  let posX = 120;
+  let posY = k2.height() - 40;
+  if (k2.width() <= 810) {
+    textsize = 20;
+    posY = posY + 20;
+  }
+  const scoreBoard = k2.make([
+    k2.pos(posX, posY),
+    k2.text("High Score: " + highscore, {
+      size: textsize,
+      width: 200,
+      font
+    }),
+    k2.anchor("center"),
+    { value: 0 }
+  ]);
+  return scoreBoard;
+}
 function makeRestartButton(k2, font) {
   let width = 120;
   let height = 40;
@@ -4168,6 +4205,7 @@ k.scene("game", () => {
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 1);
   const health = makeHealthbar(k, planet);
   const scoreBoard = makeScoreBoard(k, "monogram");
+  const highscore = makeHighScore(k, "monogram");
   k.onCollide("astroid", "planet", (asteroid, planet2) => {
     hit(k, asteroid, planet2);
   });
@@ -4182,12 +4220,14 @@ k.scene("game", () => {
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
   k.add(health);
   k.add(scoreBoard);
+  k.add(highscore);
   k.add(planet);
 });
 k.scene("gameover", () => {
   const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
   const gameover = gameoverText(k, finalScore, "monogram");
   const restartButton = makeRestartButton(k, "monogram");
+  updateHighscore(finalScore);
   k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
   k.add(planet);
   k.add(gameover);
