@@ -30,7 +30,7 @@ export function makeRestartButton(k: KaboomCtx, font: string) {
 			align: "center"
 		}),
 		k.anchor("center"),
-		k.pos(0, 0)
+		k.pos(0, -textsize / 10)
 	]);
 
 
