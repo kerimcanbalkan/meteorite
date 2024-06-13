@@ -11,13 +11,6 @@ import { makeWelcome } from "./ui/welcome";
 
 let finalScore = 0;
 k.loadSprite("space", "/save-the-planet/sprites/space.png");
-// k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
-// 	sliceX: 16,
-// 	sliceY: 2,
-// 	anims: {
-// 		"roll": { from: 0, to: 31, speed: 5, loop: true }
-// 	}
-// });
 
 k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
 	sliceX: 20,
@@ -26,7 +19,6 @@ k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
 		"turn": { from: 0, to: 99, speed: 10, loop: true }
 	}
 })
-
 
 k.loadSprite("asteroid", "/save-the-planet/sprites/asteroid.png", {
 	sliceX: 20,
@@ -43,6 +35,14 @@ k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
 		"turn": { from: 0, to: 99, speed: 10, loop: true }
 	}
 })
+
+k.loadSprite("explode", "/save-the-planet/sprites/ex.png", {
+	sliceX: 20,
+	sliceY: 1,
+	anims: {
+		"explode": { from: 0, to: 19, speed: 40, loop: false }
+	}
+});
 k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 
 k.scene("game", () => {
@@ -52,13 +52,14 @@ k.scene("game", () => {
 	const scoreBoard = makeScoreBoard(k, "monogram");
 	const highscore = makeHighScore(k, "monogram");
 
-	k.onCollide("astroid", "planet", (asteroid, planet) => {
+	k.onCollide("asteroid", "planet", (asteroid, planet) => {
 		hit(k, asteroid, planet);
 	})
 
-	k.onClick("astroid", (asteroid) => {
+	k.onClick("asteroid", (asteroid) => {
 		destroyAsteroid(k, asteroid, scoreBoard);
 	})
+
 
 	planet.on("death", () => {
 		finalScore = scoreBoard.value;
