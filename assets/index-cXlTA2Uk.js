@@ -56,7 +56,7 @@ function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
     k2.scale(scale),
     k2.move(direction, 120),
     k2.anchor("center"),
-    "astroid"
+    "asteroid"
   ]);
   return astroid;
 }
@@ -67,7 +67,7 @@ function spawnAsteroid(k2, planet, sprite, anim, getScore) {
     mobile = true;
   }
   const spawn = () => {
-    let scale = k2.rand(0.45, 1.7);
+    let scale = k2.rand(0.7, 2.4);
     if (k2.width() < 640) {
       scale = k2.rand(0.5, 1.2);
     }
@@ -86,7 +86,7 @@ function spawnAsteroid(k2, planet, sprite, anim, getScore) {
     k2.add(ast);
     const score = getScore();
     if (mobile) {
-      spawnInterval = Math.max(0.7, 2 - score / 100);
+      spawnInterval = Math.max(0.9, 2.2 - score / 100);
     }
     spawnInterval = Math.max(0.5, 2 - score / 100);
     k2.wait(spawnInterval, spawn);
@@ -97,13 +97,22 @@ function destroyAsteroid(k2, asteroid, score) {
   const point = Math.floor(10 / asteroid.scale.x);
   score.value = score.value + point;
   score.text = "Score: " + score.value;
-  k2.destroy(asteroid);
+  asteroidExplode(k2, asteroid, "explode", "explode");
+  k2.wait(0.5, () => {
+    k2.destroy(asteroid);
+  });
 }
 function hit(k2, asteroid, planet) {
   const damage = asteroid.scale.x * 20;
   k2.shake(damage);
   planet.hurt(damage);
   k2.destroy(asteroid);
+}
+function asteroidExplode(k2, asteroid, sprite, anim) {
+  asteroid.use(k2.sprite(sprite));
+  asteroid.use(k2.move(0, 0));
+  asteroid.use(k2.scale(asteroid.scale.x * 1.4));
+  asteroid.play(anim);
 }
 function makePlanet(k2, sprite, posX, posY, opacity) {
   let scale = 2;
@@ -4179,18 +4188,18 @@ function makeWelcome(k2, font) {
 }
 let finalScore = 0;
 k.loadSprite("space", "/save-the-planet/sprites/space.png");
-k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
-  sliceX: 16,
-  sliceY: 2,
-  anims: {
-    "roll": { from: 0, to: 31, speed: 5, loop: true }
-  }
-});
 k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
   sliceX: 20,
   sliceY: 5,
   anims: {
     "turn": { from: 0, to: 99, speed: 10, loop: true }
+  }
+});
+k.loadSprite("asteroid", "/save-the-planet/sprites/asteroid.png", {
+  sliceX: 20,
+  sliceY: 5,
+  anims: {
+    "roll": { from: 0, to: 99, speed: 10, loop: true }
   }
 });
 k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
@@ -4200,16 +4209,23 @@ k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
     "turn": { from: 0, to: 99, speed: 10, loop: true }
   }
 });
+k.loadSprite("explode", "/save-the-planet/sprites/ex.png", {
+  sliceX: 20,
+  sliceY: 1,
+  anims: {
+    "explode": { from: 0, to: 19, speed: 40, loop: false }
+  }
+});
 k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 k.scene("game", () => {
   const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 1);
   const health = makeHealthbar(k, planet);
   const scoreBoard = makeScoreBoard(k, "monogram");
   const highscore = makeHighScore(k, "monogram");
-  k.onCollide("astroid", "planet", (asteroid, planet2) => {
+  k.onCollide("asteroid", "planet", (asteroid, planet2) => {
     hit(k, asteroid, planet2);
   });
-  k.onClick("astroid", (asteroid) => {
+  k.onClick("asteroid", (asteroid) => {
     destroyAsteroid(k, asteroid, scoreBoard);
   });
   planet.on("death", () => {
