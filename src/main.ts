@@ -11,13 +11,13 @@ import { makeWelcome } from "./ui/welcome";
 
 let finalScore = 0;
 k.loadSprite("space", "/save-the-planet/sprites/space.png");
-k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
-	sliceX: 16,
-	sliceY: 2,
-	anims: {
-		"roll": { from: 0, to: 31, speed: 5, loop: true }
-	}
-});
+// k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
+// 	sliceX: 16,
+// 	sliceY: 2,
+// 	anims: {
+// 		"roll": { from: 0, to: 31, speed: 5, loop: true }
+// 	}
+// });
 
 k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
 	sliceX: 20,
@@ -26,6 +26,15 @@ k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
 		"turn": { from: 0, to: 99, speed: 10, loop: true }
 	}
 })
+
+
+k.loadSprite("asteroid", "/save-the-planet/sprites/asteroid.png", {
+	sliceX: 20,
+	sliceY: 5,
+	anims: {
+		"roll": { from: 0, to: 99, speed: 10, loop: true }
+	}
+});
 
 k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
 	sliceX: 20,

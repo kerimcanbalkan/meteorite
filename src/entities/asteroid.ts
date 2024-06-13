@@ -26,7 +26,7 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 	}
 
 	const spawn = () => {
-		let scale = k.rand(0.45, 1.7);
+		let scale = k.rand(0.7, 2.4);
 
 		if (k.width() < 640) {
 			scale = k.rand(0.5, 1.2);
@@ -47,7 +47,7 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 		// Update the spawn interval based on the score
 		const score = getScore();
 		if (mobile) {
-			spawnInterval = Math.max(0.7, 2 - score / 100); // Decrease interval, minimum 0.7 seconds
+			spawnInterval = Math.max(0.9, 2.2 - score / 100); // Decrease interval, minimum 0.7 seconds
 		}
 		spawnInterval = Math.max(0.5, 2 - score / 100); // Decrease interval, minimum 0.5 seconds
 
