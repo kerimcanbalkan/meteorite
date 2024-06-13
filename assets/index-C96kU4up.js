@@ -67,9 +67,9 @@ function spawnAsteroid(k2, planet, sprite, anim, getScore) {
     mobile = true;
   }
   const spawn = () => {
-    let scale = k2.rand(0.7, 2.4);
+    let scale = k2.rand(0.5, 1.8);
     if (k2.width() < 640) {
-      scale = k2.rand(0.5, 1.2);
+      scale = k2.rand(0.6, 1.5);
     }
     const offscreenPositions = [
       { x: k2.rand(0, k2.width()), y: -50 },
@@ -122,7 +122,7 @@ function makePlanet(k2, sprite, posX, posY, opacity) {
   const planet = k2.make([
     k2.sprite(sprite, { anim: "turn" }),
     k2.area(),
-    k2.body(),
+    k2.body({ isStatic: true }),
     k2.pos(posX, posY),
     k2.health(150),
     k2.scale(scale),
@@ -4195,11 +4195,11 @@ k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
     "turn": { from: 0, to: 99, speed: 10, loop: true }
   }
 });
-k.loadSprite("asteroid", "/save-the-planet/sprites/asteroid.png", {
-  sliceX: 20,
-  sliceY: 5,
+k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
+  sliceX: 16,
+  sliceY: 2,
   anims: {
-    "roll": { from: 0, to: 99, speed: 10, loop: true }
+    "roll": { from: 0, to: 15, speed: 10, loop: true }
   }
 });
 k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
