@@ -26,10 +26,10 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 	}
 
 	const spawn = () => {
-		let scale = k.rand(0.7, 2.4);
+		let scale = k.rand(0.5, 1.8);
 
 		if (k.width() < 640) {
-			scale = k.rand(0.5, 1.2);
+			scale = k.rand(0.6, 1.5);
 		}
 
 		const offscreenPositions = [

@@ -10,7 +10,7 @@ export function makePlanet(k: KaboomCtx, sprite: string, posX: number, posY: num
 	const planet = k.make([
 		k.sprite(sprite, { anim: "turn" }),
 		k.area(),
-		k.body(),
+		k.body({ isStatic: true }),
 		k.pos(posX, posY),
 		k.health(150),
 		k.scale(scale),
