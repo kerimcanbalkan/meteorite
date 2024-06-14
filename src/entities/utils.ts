@@ -1,3 +1,5 @@
+import { KaboomCtx } from "kaplay";
+
 export function getHighScore(): number {
 	const highscoreStr = localStorage.getItem("highscore");
 
