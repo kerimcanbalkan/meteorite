@@ -138,6 +138,7 @@ function asteroidExplode(k2, asteroid, sprite, anim) {
   asteroid.use(k2.move(0, 0));
   asteroid.use(k2.scale(asteroid.scale.x * 1.4));
   asteroid.unuse("area");
+  asteroid.unuse("body");
   asteroid.play(anim);
 }
 function makePlanet(k2, sprite, posX, posY, opacity) {
