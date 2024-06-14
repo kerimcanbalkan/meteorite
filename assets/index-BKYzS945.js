@@ -72,7 +72,7 @@ function regularPolygon(k2, radius, sides) {
 }
 function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
   const direction = k2.vec2(planet.pos.x - posX, planet.pos.y - posY).unit();
-  const octagonPoints = regularPolygon(k2, 35, 20);
+  const octagonPoints = regularPolygon(k2, 25, 20);
   const astroid = k2.make([
     k2.sprite(sprite, { anim }),
     k2.area({ collisionIgnore: ["asteroid"], shape: new k2.Polygon(octagonPoints) }),
@@ -92,9 +92,9 @@ function spawnAsteroid(k2, planet, sprite, anim, getScore) {
     mobile = true;
   }
   const spawn = () => {
-    let scale = k2.rand(0.5, 1.8);
+    let scale = k2.rand(0.8, 2.2);
     if (k2.width() < 640) {
-      scale = k2.rand(0.6, 1.5);
+      scale = k2.rand(0.6, 1.8);
     }
     const offscreenPositions = [
       { x: k2.rand(0, k2.width()), y: -50 },
@@ -123,9 +123,7 @@ function destroyAsteroid(k2, asteroid, score) {
   score.value = score.value + point;
   score.text = "Score: " + score.value;
   asteroidExplode(k2, asteroid, "explode", "explode");
-  k2.wait(0.5, () => {
-    k2.destroy(asteroid);
-  });
+  k2.destroy(asteroid);
 }
 function hit(k2, asteroid, planet) {
   const damage = Math.round(asteroid.scale.x * 20);
@@ -134,11 +132,16 @@ function hit(k2, asteroid, planet) {
   k2.destroy(asteroid);
 }
 function asteroidExplode(k2, asteroid, sprite, anim) {
-  asteroid.use(k2.sprite(sprite));
-  asteroid.use(k2.move(0, 0));
-  asteroid.use(k2.scale(asteroid.scale.x * 1.4));
-  asteroid.unuse("body");
-  asteroid.play(anim);
+  const explosion = k2.add([
+    k2.sprite(sprite),
+    k2.pos(asteroid.pos),
+    k2.scale(asteroid.scale.x * 2),
+    k2.anchor("center")
+  ]);
+  explosion.play(anim);
+  explosion.onAnimEnd(() => {
+    k2.destroy(explosion);
+  });
 }
 function makePlanet(k2, sprite, posX, posY, opacity) {
   let scale = 2;
@@ -4208,11 +4211,11 @@ k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
     "turn": { from: 0, to: 99, speed: 10, loop: true }
   }
 });
-k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
-  sliceX: 16,
-  sliceY: 2,
+k.loadSprite("asteroid", "/save-the-planet/sprites/asteroid.png", {
+  sliceX: 20,
+  sliceY: 5,
   anims: {
-    "roll": { from: 0, to: 15, speed: 10, loop: true }
+    "roll": { from: 0, to: 99, speed: 20, loop: true }
   }
 });
 k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
