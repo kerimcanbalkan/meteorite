@@ -46,11 +46,36 @@ var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n2, _o, _p, _q, _r2, _
     fetch(link.href, fetchOpts);
   }
 })();
+function getHighScore() {
+  const highscoreStr = localStorage.getItem("highscore");
+  if (highscoreStr) {
+    return JSON.parse(highscoreStr);
+  } else {
+    const initialHighscore = 0;
+    localStorage.setItem("highscore", JSON.stringify(initialHighscore));
+    return initialHighscore;
+  }
+}
+function updateHighscore(newScore) {
+  const currentHighscore = getHighScore();
+  if (newScore > currentHighscore) {
+    localStorage.setItem("highscore", JSON.stringify(newScore));
+  }
+}
+function regularPolygon(k2, radius, sides) {
+  const points = [];
+  for (let i2 = 0; i2 < sides; i2++) {
+    const angle = 2 * Math.PI / sides * i2;
+    points.push(k2.vec2(radius * Math.cos(angle), radius * Math.sin(angle)));
+  }
+  return points;
+}
 function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
   const direction = k2.vec2(planet.pos.x - posX, planet.pos.y - posY).unit();
+  const octagonPoints = regularPolygon(k2, 35, 20);
   const astroid = k2.make([
     k2.sprite(sprite, { anim }),
-    k2.area(),
+    k2.area({ collisionIgnore: ["asteroid"], shape: new k2.Polygon(octagonPoints) }),
     k2.body(),
     k2.pos(posX, posY),
     k2.scale(scale),
@@ -112,6 +137,7 @@ function asteroidExplode(k2, asteroid, sprite, anim) {
   asteroid.use(k2.sprite(sprite));
   asteroid.use(k2.move(0, 0));
   asteroid.use(k2.scale(asteroid.scale.x * 1.4));
+  asteroid.unuse("area");
   asteroid.play(anim);
 }
 function makePlanet(k2, sprite, posX, posY, opacity) {
@@ -119,9 +145,12 @@ function makePlanet(k2, sprite, posX, posY, opacity) {
   if (k2.width() < 640) {
     scale = 1.3;
   }
+  const octagonPoints = regularPolygon(k2, 50, 20);
   const planet = k2.make([
     k2.sprite(sprite, { anim: "turn" }),
-    k2.area(),
+    k2.area({
+      shape: new k2.Polygon(octagonPoints)
+    }),
     k2.body({ isStatic: true }),
     k2.pos(posX, posY),
     k2.health(150),
@@ -132,22 +161,6 @@ function makePlanet(k2, sprite, posX, posY, opacity) {
     "planet"
   ]);
   return planet;
-}
-function getHighScore() {
-  const highscoreStr = localStorage.getItem("highscore");
-  if (highscoreStr) {
-    return JSON.parse(highscoreStr);
-  } else {
-    const initialHighscore = 0;
-    localStorage.setItem("highscore", JSON.stringify(initialHighscore));
-    return initialHighscore;
-  }
-}
-function updateHighscore(newScore) {
-  const currentHighscore = getHighScore();
-  if (newScore > currentHighscore) {
-    localStorage.setItem("highscore", JSON.stringify(newScore));
-  }
 }
 var yi = Object.defineProperty;
 var i = (n, e) => yi(n, "name", { value: e, configurable: true });
