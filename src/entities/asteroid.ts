@@ -1,12 +1,15 @@
 import { PlanetGameObj, ScoreBoardGameObj } from "./types";
 import { GameObj, KaboomCtx } from "kaplay";
+import { regularPolygon } from "./utils";
 
 export function makeAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: string, anim: string, scale: number, posX: number, posY: number) {
 	const direction = k.vec2(planet.pos.x - posX, planet.pos.y - posY).unit();
 
+	const octagonPoints = regularPolygon(k, 35, 20)
+
 	const astroid = k.make([
 		k.sprite(sprite, { anim: anim }),
-		k.area(),
+		k.area({ collisionIgnore: ["asteroid"], shape: new k.Polygon(octagonPoints) }),
 		k.body(),
 		k.pos(posX, posY),
 		k.scale(scale),
@@ -80,5 +83,6 @@ function asteroidExplode(k: KaboomCtx, asteroid: GameObj, sprite: string, anim: 
 	asteroid.use(k.sprite(sprite));
 	asteroid.use(k.move(0, 0));
 	asteroid.use(k.scale(asteroid.scale.x * 1.4));
+	asteroid.unuse("area");
 	asteroid.play(anim);
 }

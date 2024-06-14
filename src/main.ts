@@ -46,7 +46,6 @@ k.loadSprite("explode", "/save-the-planet/sprites/ex.png", {
 k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 
 k.scene("game", () => {
-
 	const planet = makePlanet(k, "planet", (k.width() / 2), k.height() / 2, 1);
 	const health = makeHealthbar(k, planet);
 	const scoreBoard = makeScoreBoard(k, "monogram");

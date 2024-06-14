@@ -1,4 +1,5 @@
 import { KaboomCtx } from "kaplay";
+import { regularPolygon } from "./utils";
 
 export function makePlanet(k: KaboomCtx, sprite: string, posX: number, posY: number, opacity: number) {
 	let scale = 2;
@@ -7,9 +8,13 @@ export function makePlanet(k: KaboomCtx, sprite: string, posX: number, posY: num
 		scale = 1.3;
 	}
 
+	const octagonPoints = regularPolygon(k, 50, 20)
+
 	const planet = k.make([
 		k.sprite(sprite, { anim: "turn" }),
-		k.area(),
+		k.area({
+			shape: new k.Polygon(octagonPoints)
+		}),
 		k.body({ isStatic: true }),
 		k.pos(posX, posY),
 		k.health(150),
@@ -22,4 +27,5 @@ export function makePlanet(k: KaboomCtx, sprite: string, posX: number, posY: num
 
 	return planet;
 }
+
 
