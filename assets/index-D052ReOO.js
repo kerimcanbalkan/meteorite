@@ -72,7 +72,7 @@ function regularPolygon(k2, radius, sides) {
 }
 function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
   const direction = k2.vec2(planet.pos.x - posX, planet.pos.y - posY).unit();
-  const octagonPoints = regularPolygon(k2, 35, 8);
+  const octagonPoints = regularPolygon(k2, 35, 20);
   const astroid = k2.make([
     k2.sprite(sprite, { anim }),
     k2.area({ collisionIgnore: ["asteroid"], shape: new k2.Polygon(octagonPoints) }),
@@ -137,7 +137,6 @@ function asteroidExplode(k2, asteroid, sprite, anim) {
   asteroid.use(k2.sprite(sprite));
   asteroid.use(k2.move(0, 0));
   asteroid.use(k2.scale(asteroid.scale.x * 1.4));
-  asteroid.unuse("area");
   asteroid.unuse("body");
   asteroid.play(anim);
 }
