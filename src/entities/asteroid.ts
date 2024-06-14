@@ -73,7 +73,7 @@ export function destroyAsteroid(k: KaboomCtx, asteroid: GameObj, score: ScoreBoa
 }
 
 export function hit(k: KaboomCtx, asteroid: GameObj, planet: GameObj) {
-	const damage = asteroid.scale.x * 20;
+	const damage = Math.round(asteroid.scale.x * 20);
 	k.shake(damage);
 	planet.hurt(damage);
 	k.destroy(asteroid);
@@ -83,6 +83,6 @@ function asteroidExplode(k: KaboomCtx, asteroid: GameObj, sprite: string, anim: 
 	asteroid.use(k.sprite(sprite));
 	asteroid.use(k.move(0, 0));
 	asteroid.use(k.scale(asteroid.scale.x * 1.4));
-	asteroid.unuse("area");
+	asteroid.unuse("body");
 	asteroid.play(anim);
 }
