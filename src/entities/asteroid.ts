@@ -5,7 +5,7 @@ import { regularPolygon } from "./utils";
 export function makeAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: string, anim: string, scale: number, posX: number, posY: number) {
 	const direction = k.vec2(planet.pos.x - posX, planet.pos.y - posY).unit();
 
-	const octagonPoints = regularPolygon(k, 35, 20)
+	const octagonPoints = regularPolygon(k, 25, 20)
 
 	const astroid = k.make([
 		k.sprite(sprite, { anim: anim }),
@@ -29,10 +29,10 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 	}
 
 	const spawn = () => {
-		let scale = k.rand(0.5, 1.8);
+		let scale = k.rand(0.8, 2.2);
 
 		if (k.width() < 640) {
-			scale = k.rand(0.6, 1.5);
+			scale = k.rand(0.6, 1.8);
 		}
 
 		const offscreenPositions = [
@@ -67,9 +67,7 @@ export function destroyAsteroid(k: KaboomCtx, asteroid: GameObj, score: ScoreBoa
 	score.value = score.value + point;
 	score.text = "Score: " + score.value;
 	asteroidExplode(k, asteroid, "explode", "explode");
-	k.wait(0.5, () => {
-		k.destroy(asteroid);
-	})
+	k.destroy(asteroid);
 }
 
 export function hit(k: KaboomCtx, asteroid: GameObj, planet: GameObj) {
@@ -80,9 +78,15 @@ export function hit(k: KaboomCtx, asteroid: GameObj, planet: GameObj) {
 }
 
 function asteroidExplode(k: KaboomCtx, asteroid: GameObj, sprite: string, anim: string) {
-	asteroid.use(k.sprite(sprite));
-	asteroid.use(k.move(0, 0));
-	asteroid.use(k.scale(asteroid.scale.x * 1.4));
-	asteroid.unuse("body");
-	asteroid.play(anim);
+	const explosion = k.add([
+		k.sprite(sprite),
+		k.pos(asteroid.pos),
+		k.scale(asteroid.scale.x * 2),
+		k.anchor("center"),
+	])
+	explosion.play(anim);
+
+	explosion.onAnimEnd(() => {
+		k.destroy(explosion);
+	});
 }

@@ -20,11 +20,11 @@ k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
 	}
 })
 
-k.loadSprite("asteroid", "/save-the-planet/sprites/animated_asteroid.png", {
-	sliceX: 16,
-	sliceY: 2,
+k.loadSprite("asteroid", "/save-the-planet/sprites/asteroid.png", {
+	sliceX: 20,
+	sliceY: 5,
 	anims: {
-		"roll": { from: 0, to: 15, speed: 10, loop: true }
+		"roll": { from: 0, to: 99, speed: 20, loop: true }
 	}
 });
 
