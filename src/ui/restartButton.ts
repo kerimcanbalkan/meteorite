@@ -1,6 +1,6 @@
 import { KaboomCtx } from "kaplay";
 
-export function makeRestartButton(k: KaboomCtx, font: string) {
+export function makeRestartButton(k: KaboomCtx, font: string,text:string) {
 	let width = 120;
 	let height = 40;
 	let textsize = 30;
@@ -24,7 +24,7 @@ export function makeRestartButton(k: KaboomCtx, font: string) {
 	]);
 
 	const buttonText = button.add([
-		k.text("Restart", {
+		k.text(text, {
 			size: textsize,
 			font: font,
 			align: "center"

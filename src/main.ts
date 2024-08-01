@@ -2,6 +2,7 @@ import { destroyAsteroid, hit, spawnAsteroid } from "./entities/asteroid";
 import { makePlanet } from "./entities/planet";
 import { updateHighscore } from "./entities/utils";
 import { k } from "./kaplayCtx";
+import {  makeUsernameText } from "./ui/first";
 import { gameoverText } from "./ui/gameoverText";
 import { makeHealthbar } from "./ui/healthbar";
 import { makeHighScore } from "./ui/highScore";
@@ -45,6 +46,14 @@ k.loadSprite("explode", "/save-the-planet/sprites/ex.png", {
 });
 k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 
+k.loadSprite("sound", "/save-the-planet/sprites/icons.png", {
+	sliceX: 10,
+	sliceY: 9,
+	anims: {
+		default: {from:40, to:40}
+	}
+});
+
 k.scene("game", () => {
 	const planet = makePlanet(k, "planet", (k.width() / 2), k.height() / 2, 1);
 	const health = makeHealthbar(k, planet);
@@ -76,7 +85,7 @@ k.scene("game", () => {
 k.scene("gameover", () => {
 	const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
 	const gameover = gameoverText(k, finalScore, "monogram");
-	const restartButton = makeRestartButton(k, "monogram");
+	const restartButton = makeRestartButton(k, "monogram", "Restart");
 	updateHighscore(finalScore);
 
 
@@ -89,7 +98,7 @@ k.scene("gameover", () => {
 		k.go("game");
 	})
 
-})
+});
 
 k.scene("welcome", () => {
 	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
@@ -102,6 +111,31 @@ k.scene("welcome", () => {
 	k.onClick(() => {
 		k.go("game");
 	});
-})
+});
 
-k.go("welcome");
+k.scene("first",() => {
+	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.4);
+	k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
+	k.add(planet);
+// sound button disabled for now
+//	k.add([k.sprite("sound", {width: k.width() * 0.03, height: k.wsidth()*0.03, anim: "default"}), k.pos(k.width()-k.width()*0.03*1.3,0)]);
+	const submitButton = (<HTMLButtonElement>document.getElementById("submit"));
+	submitButton.addEventListener("click", () => {
+		const username = (<HTMLButtonElement>document.getElementById("usernameInput")).value;
+		localStorage.setItem("username", JSON.stringify(username));
+		const first = (<HTMLButtonElement>document.getElementById("first"));
+		first.style.display = "none";
+		k.go("welcome");
+	});
+});
+
+const username = localStorage.getItem("username");
+if (username){
+	const first = (<HTMLButtonElement>document.getElementById("first"));
+	first.style.display = "none";
+	k.go("welcome");
+}else {
+	k.go("first");
+	const first = (<HTMLInputElement>document.getElementById("first")); 
+	first.style.display = "flex";
+}
