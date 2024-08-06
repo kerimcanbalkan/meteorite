@@ -2,7 +2,6 @@ import { destroyAsteroid, hit, spawnAsteroid } from "./entities/asteroid";
 import { makePlanet } from "./entities/planet";
 import { updateHighscore } from "./entities/utils";
 import { k } from "./kaplayCtx";
-import {  makeUsernameText } from "./ui/first";
 import { gameoverText } from "./ui/gameoverText";
 import { makeHealthbar } from "./ui/healthbar";
 import { makeHighScore } from "./ui/highScore";
@@ -11,6 +10,14 @@ import { makeScoreBoard } from "./ui/score";
 import { makeWelcome } from "./ui/welcome";
 
 let finalScore = 0;
+k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
+
+k.loadSound("hit", "/save-the-planet/sounds/impact.wav")
+
+k.loadSound("explode", "/save-the-planet/sounds/lazerhit.wav")
+
+k.loadSound("ingameAmbient", "/save-the-planet/sounds/ingameambient2.wav")
+
 k.loadSprite("space", "/save-the-planet/sprites/space.png");
 
 k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
@@ -44,28 +51,32 @@ k.loadSprite("explode", "/save-the-planet/sprites/ex.png", {
 		"explode": { from: 0, to: 19, speed: 40, loop: false }
 	}
 });
-k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 
 k.loadSprite("sound", "/save-the-planet/sprites/icons.png", {
 	sliceX: 10,
 	sliceY: 9,
 	anims: {
-		default: {from:40, to:40}
+		default: { from: 40, to: 40 }
 	}
 });
 
 k.scene("game", () => {
+	k.play("ingameAmbient", {
+		volume: 0.2,
+		loop: true
+	});
+
 	const planet = makePlanet(k, "planet", (k.width() / 2), k.height() / 2, 1);
 	const health = makeHealthbar(k, planet);
 	const scoreBoard = makeScoreBoard(k, "monogram");
 	const highscore = makeHighScore(k, "monogram");
 
 	k.onCollide("asteroid", "planet", (asteroid, planet) => {
-		hit(k, asteroid, planet);
+		hit(k, asteroid, planet, "hit");
 	})
 
 	k.onClick("asteroid", (asteroid) => {
-		destroyAsteroid(k, asteroid, scoreBoard);
+		destroyAsteroid(k, asteroid, scoreBoard, "explode");
 	})
 
 
@@ -83,6 +94,10 @@ k.scene("game", () => {
 });
 
 k.scene("gameover", () => {
+	k.play("ingameAmbient", {
+		volume: 0.2,
+		loop: true
+	});
 	const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
 	const gameover = gameoverText(k, finalScore, "monogram");
 	const restartButton = makeRestartButton(k, "monogram", "Restart");
@@ -101,6 +116,10 @@ k.scene("gameover", () => {
 });
 
 k.scene("welcome", () => {
+	k.play("ingameAmbient", {
+		volume: 0.2,
+		loop: true
+	});
 	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
 	const welcome = makeWelcome(k, "monogram");
 
@@ -113,12 +132,12 @@ k.scene("welcome", () => {
 	});
 });
 
-k.scene("first",() => {
+k.scene("first", () => {
 	const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.4);
 	k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
 	k.add(planet);
-// sound button disabled for now
-//	k.add([k.sprite("sound", {width: k.width() * 0.03, height: k.wsidth()*0.03, anim: "default"}), k.pos(k.width()-k.width()*0.03*1.3,0)]);
+	// sound button disabled for now
+	//	k.add([k.sprite("sound", {width: k.width() * 0.03, height: k.wsidth()*0.03, anim: "default"}), k.pos(k.width()-k.width()*0.03*1.3,0)]);
 	const submitButton = (<HTMLButtonElement>document.getElementById("submit"));
 	submitButton.addEventListener("click", () => {
 		const username = (<HTMLButtonElement>document.getElementById("usernameInput")).value;
@@ -130,12 +149,12 @@ k.scene("first",() => {
 });
 
 const username = localStorage.getItem("username");
-if (username){
+if (username) {
 	const first = (<HTMLButtonElement>document.getElementById("first"));
 	first.style.display = "none";
 	k.go("welcome");
-}else {
+} else {
 	k.go("first");
-	const first = (<HTMLInputElement>document.getElementById("first")); 
+	const first = (<HTMLInputElement>document.getElementById("first"));
 	first.style.display = "flex";
 }

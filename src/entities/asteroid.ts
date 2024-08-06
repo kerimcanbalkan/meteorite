@@ -62,22 +62,23 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 	k.wait(spawnInterval, spawn);
 }
 
-export function destroyAsteroid(k: KaboomCtx, asteroid: GameObj, score: ScoreBoardGameObj) {
+export function destroyAsteroid(k: KaboomCtx, asteroid: GameObj, score: ScoreBoardGameObj, sound: string) {
 	const point = Math.floor(10 / asteroid.scale.x);
 	score.value = score.value + point;
 	score.text = "Score: " + score.value;
-	asteroidExplode(k, asteroid, "explode", "explode");
+	asteroidExplode(k, asteroid, "explode", "explode", sound);
 	k.destroy(asteroid);
 }
 
-export function hit(k: KaboomCtx, asteroid: GameObj, planet: GameObj) {
+export function hit(k: KaboomCtx, asteroid: GameObj, planet: GameObj, sound: string) {
 	const damage = Math.round(asteroid.scale.x * 20);
 	k.shake(damage);
+	k.play(sound);
 	planet.hurt(damage);
 	k.destroy(asteroid);
 }
 
-function asteroidExplode(k: KaboomCtx, asteroid: GameObj, sprite: string, anim: string) {
+function asteroidExplode(k: KaboomCtx, asteroid: GameObj, sprite: string, anim: string, sound: string) {
 	const explosion = k.add([
 		k.sprite(sprite),
 		k.pos(asteroid.pos),
@@ -85,6 +86,7 @@ function asteroidExplode(k: KaboomCtx, asteroid: GameObj, sprite: string, anim: 
 		k.anchor("center"),
 	])
 	explosion.play(anim);
+	k.play(sound);
 
 	explosion.onAnimEnd(() => {
 		k.destroy(explosion);
