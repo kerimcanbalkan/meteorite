@@ -76,7 +76,7 @@ k.scene("game", () => {
 	})
 
 	k.onClick("asteroid", (asteroid) => {
-		destroyAsteroid(k, asteroid, scoreBoard, "explode");
+		destroyAsteroid(k, asteroid, scoreBoard, "hit");
 	})
 
 
