@@ -4259,7 +4259,7 @@ k.scene("game", () => {
     hit(k, asteroid, planet2, "hit");
   });
   k.onClick("asteroid", (asteroid) => {
-    destroyAsteroid(k, asteroid, scoreBoard, "explode");
+    destroyAsteroid(k, asteroid, scoreBoard, "hit");
   });
   planet.on("death", () => {
     finalScore = scoreBoard.value;
