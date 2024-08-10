@@ -44,5 +44,5 @@
    ```
 4. Run the game:
    ```bash
-   npm start
+   npm run dev
    ```
