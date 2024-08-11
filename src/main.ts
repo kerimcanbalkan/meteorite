@@ -54,14 +54,14 @@ const username = localStorage.getItem("username");
 const first = (<HTMLButtonElement>document.getElementById("first"));
 first.style.display = "none";
 k.onLoad(() => {
-if (username) {
-	const first = (<HTMLButtonElement>document.getElementById("first"));
-	first.style.display = "none";
-	k.go("start");
-} else {
-	k.go("username");
-	const first = (<HTMLInputElement>document.getElementById("first"));
-	first.style.display = "flex";
-}
+	if (username) {
+		const first = (<HTMLButtonElement>document.getElementById("first"));
+		first.style.display = "none";
+		k.go("start");
+	} else {
+		k.go("username");
+		const first = (<HTMLInputElement>document.getElementById("first"));
+		first.style.display = "flex";
+	}
 })
 
