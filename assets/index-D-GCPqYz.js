@@ -46,127 +46,6 @@ var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n2, _o, _p, _q, _r2, _
     fetch(link.href, fetchOpts);
   }
 })();
-function getHighScore() {
-  const highscoreStr = localStorage.getItem("highscore");
-  if (highscoreStr) {
-    return JSON.parse(highscoreStr);
-  } else {
-    const initialHighscore = 0;
-    localStorage.setItem("highscore", JSON.stringify(initialHighscore));
-    return initialHighscore;
-  }
-}
-function updateHighscore(newScore) {
-  const currentHighscore = getHighScore();
-  if (newScore > currentHighscore) {
-    localStorage.setItem("highscore", JSON.stringify(newScore));
-  }
-}
-function regularPolygon(k2, radius, sides) {
-  const points = [];
-  for (let i2 = 0; i2 < sides; i2++) {
-    const angle = 2 * Math.PI / sides * i2;
-    points.push(k2.vec2(radius * Math.cos(angle), radius * Math.sin(angle)));
-  }
-  return points;
-}
-function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
-  const direction = k2.vec2(planet.pos.x - posX, planet.pos.y - posY).unit();
-  const octagonPoints = regularPolygon(k2, 25, 20);
-  const astroid = k2.make([
-    k2.sprite(sprite, { anim }),
-    k2.area({ collisionIgnore: ["asteroid"], shape: new k2.Polygon(octagonPoints) }),
-    k2.body(),
-    k2.pos(posX, posY),
-    k2.scale(scale),
-    k2.move(direction, 120),
-    k2.anchor("center"),
-    "asteroid"
-  ]);
-  return astroid;
-}
-function spawnAsteroid(k2, planet, sprite, anim, getScore) {
-  let spawnInterval = 1.5;
-  let mobile = false;
-  if (k2.width() < 640) {
-    mobile = true;
-  }
-  const spawn = () => {
-    let scale = k2.rand(0.8, 2.2);
-    if (k2.width() < 640) {
-      scale = k2.rand(0.6, 1.8);
-    }
-    const offscreenPositions = [
-      { x: k2.rand(0, k2.width()), y: -50 },
-      // Top
-      { x: k2.rand(0, k2.width()), y: k2.height() + 50 },
-      // Bottom
-      { x: -50, y: k2.rand(0, k2.height()) },
-      // Left
-      { x: k2.width() + 50, y: k2.rand(0, k2.height()) }
-      // Right
-    ];
-    const randomPos = offscreenPositions[Math.floor(k2.rand(0, offscreenPositions.length))];
-    const ast = makeAsteroid(k2, planet, sprite, anim, scale, randomPos.x, randomPos.y);
-    k2.add(ast);
-    const score = getScore();
-    if (mobile) {
-      spawnInterval = Math.max(0.9, 2.2 - score / 100);
-    }
-    spawnInterval = Math.max(0.5, 2 - score / 100);
-    k2.wait(spawnInterval, spawn);
-  };
-  k2.wait(spawnInterval, spawn);
-}
-function destroyAsteroid(k2, asteroid, score, sound) {
-  const point = Math.floor(10 / asteroid.scale.x);
-  score.value = score.value + point;
-  score.text = "Score: " + score.value;
-  asteroidExplode(k2, asteroid, "explode", "explode", sound);
-  k2.destroy(asteroid);
-}
-function hit(k2, asteroid, planet, sound) {
-  const damage = Math.round(asteroid.scale.x * 20);
-  k2.shake(damage);
-  k2.play(sound);
-  planet.hurt(damage);
-  k2.destroy(asteroid);
-}
-function asteroidExplode(k2, asteroid, sprite, anim, sound) {
-  const explosion = k2.add([
-    k2.sprite(sprite),
-    k2.pos(asteroid.pos),
-    k2.scale(asteroid.scale.x * 2),
-    k2.anchor("center")
-  ]);
-  explosion.play(anim);
-  k2.play(sound);
-  explosion.onAnimEnd(() => {
-    k2.destroy(explosion);
-  });
-}
-function makePlanet(k2, sprite, posX, posY, opacity) {
-  let scale = 2;
-  if (k2.width() < 640) {
-    scale = 1.3;
-  }
-  const octagonPoints = regularPolygon(k2, 50, 20);
-  const planet = k2.make([
-    k2.sprite(sprite, { anim: "turn" }),
-    k2.area({
-      shape: new k2.Polygon(octagonPoints)
-    }),
-    k2.body({ isStatic: true }),
-    k2.pos(posX, posY),
-    k2.health(150),
-    k2.scale(scale),
-    k2.opacity(opacity),
-    k2.anchor("center"),
-    { maxHp: 100, previousHp: 100 },
-    "planet"
-  ]);
-  return planet;
-}
 var yi = Object.defineProperty;
 var i = (n, e) => yi(n, "name", { value: e, configurable: true });
 var gr = (() => {
@@ -4042,6 +3921,99 @@ const k = zo({
   background: [0, 0, 0],
   canvas: document.getElementById("game")
 });
+function getHighScore() {
+  const highscoreStr = localStorage.getItem("highscore");
+  if (highscoreStr) {
+    return JSON.parse(highscoreStr);
+  } else {
+    const initialHighscore = 0;
+    localStorage.setItem("highscore", JSON.stringify(initialHighscore));
+    return initialHighscore;
+  }
+}
+function updateHighscore(newScore) {
+  const currentHighscore = getHighScore();
+  if (newScore > currentHighscore) {
+    localStorage.setItem("highscore", JSON.stringify(newScore));
+  }
+}
+function regularPolygon(k2, radius, sides) {
+  const points = [];
+  for (let i2 = 0; i2 < sides; i2++) {
+    const angle = 2 * Math.PI / sides * i2;
+    points.push(k2.vec2(radius * Math.cos(angle), radius * Math.sin(angle)));
+  }
+  return points;
+}
+function makePlanet(k2, sprite, posX, posY, opacity) {
+  let scale = 2;
+  if (k2.width() < 640) {
+    scale = 1.3;
+  }
+  const octagonPoints = regularPolygon(k2, 50, 20);
+  const planet = k2.make([
+    k2.sprite(sprite, { anim: "turn" }),
+    k2.area({
+      shape: new k2.Polygon(octagonPoints)
+    }),
+    k2.body({ isStatic: true }),
+    k2.pos(posX, posY),
+    k2.health(150),
+    k2.scale(scale),
+    k2.opacity(opacity),
+    k2.anchor("center"),
+    { maxHp: 100, previousHp: 100 },
+    "planet"
+  ]);
+  return planet;
+}
+function makeWelcome(k2, font) {
+  let textsize = 60;
+  if (k2.width() <= 810) {
+    textsize = 35;
+  }
+  const welcome = k2.make([
+    k2.pos(k2.width() / 2, k2.height() / 2),
+    k2.text("Asteroids are approaching!", {
+      size: textsize,
+      font
+    }),
+    k2.anchor("center")
+  ]);
+  welcome.add([
+    k2.pos(0, 40),
+    k2.text("Click to destroy the asteroids.", {
+      size: textsize / 1.5,
+      font
+    }),
+    k2.anchor("center")
+  ]);
+  welcome.add([
+    k2.pos(0, 120),
+    k2.text("Tap the screen to embark on your mission.", {
+      size: textsize / 2,
+      font
+    }),
+    k2.anchor("center")
+  ]);
+  return welcome;
+}
+function startScene() {
+  k.scene("start", () => {
+    k.play("ingameAmbient", {
+      volume: 0.2,
+      loop: true
+    });
+    const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
+    const welcome = makeWelcome(k, "monogram");
+    k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
+    k.add(planet);
+    k.add(welcome);
+    k.onClick(() => {
+      k.go("game");
+    });
+  });
+}
 function gameoverText(k2, score, font) {
   let textsize = 60;
   if (k2.width() <= 810) {
@@ -4064,55 +4036,6 @@ function gameoverText(k2, score, font) {
     k2.anchor("center")
   ]);
   return gameover;
-}
-function makeHealthbar(k2, planet) {
-  let width = 400;
-  let height = 20;
-  if (k2.width() < 640) {
-    width = 300;
-    height = 10;
-  }
-  const healthContainer = k2.make([
-    k2.rect(width, height),
-    k2.color(0, 0, 0),
-    k2.area(),
-    k2.anchor("center"),
-    k2.outline(2, k2.rgb(255, 255, 255)),
-    k2.pos(k2.width() / 2, 50),
-    k2.fixed()
-  ]);
-  const healthDisplay = healthContainer.add([
-    k2.rect(width - 4, height - 4),
-    k2.pos(-(width / 2 - 2), 0),
-    k2.color(255, 255, 255),
-    k2.anchor("left")
-  ]);
-  planet.on("hurt", () => {
-    const newWidth = planet.hp() / 150 * width;
-    healthDisplay.width = newWidth;
-  });
-  return healthContainer;
-}
-function makeHighScore(k2, font) {
-  const highscore = getHighScore();
-  let textsize = 30;
-  let posX = 120;
-  let posY = k2.height() - 40;
-  if (k2.width() <= 810) {
-    textsize = 20;
-    posY = posY + 20;
-  }
-  const scoreBoard = k2.make([
-    k2.pos(posX, posY),
-    k2.text("High Score: " + highscore, {
-      size: textsize,
-      width: 200,
-      font
-    }),
-    k2.anchor("center"),
-    { value: 0 }
-  ]);
-  return scoreBoard;
 }
 function makeRestartButton(k2, font, text) {
   let width = 120;
@@ -4153,6 +4076,56 @@ function makeRestartButton(k2, font, text) {
   });
   return button;
 }
+const gameState = {
+  finalScore: 0
+};
+function gameoverScene() {
+  k.scene("gameover", () => {
+    k.play("ingameAmbient", {
+      volume: 0.2,
+      loop: true
+    });
+    const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
+    const gameover = gameoverText(k, gameState.finalScore, "monogram");
+    const restartButton = makeRestartButton(k, "monogram", "Restart");
+    updateHighscore(gameState.finalScore);
+    k.add(restartButton);
+    k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
+    k.add(planet);
+    k.add(gameover);
+    restartButton.onClick(() => {
+      k.go("game");
+    });
+  });
+}
+function makeHealthbar(k2, planet) {
+  let width = 400;
+  let height = 20;
+  if (k2.width() < 640) {
+    width = 300;
+    height = 10;
+  }
+  const healthContainer = k2.make([
+    k2.rect(width, height),
+    k2.color(0, 0, 0),
+    k2.area(),
+    k2.anchor("center"),
+    k2.outline(2, k2.rgb(255, 255, 255)),
+    k2.pos(k2.width() / 2, 50),
+    k2.fixed()
+  ]);
+  const healthDisplay = healthContainer.add([
+    k2.rect(width - 4, height - 4),
+    k2.pos(-(width / 2 - 2), 0),
+    k2.color(255, 255, 255),
+    k2.anchor("left")
+  ]);
+  planet.on("hurt", () => {
+    const newWidth = planet.hp() / 150 * width;
+    healthDisplay.width = newWidth;
+  });
+  return healthContainer;
+}
 function makeScoreBoard(k2, font) {
   let textsize = 30;
   let posX = k2.width() - 20;
@@ -4174,38 +4147,145 @@ function makeScoreBoard(k2, font) {
   ]);
   return scoreBoard;
 }
-function makeWelcome(k2, font) {
-  let textsize = 60;
+function makeHighScore(k2, font) {
+  const highscore = getHighScore();
+  let textsize = 30;
+  let posX = 120;
+  let posY = k2.height() - 40;
   if (k2.width() <= 810) {
-    textsize = 35;
+    textsize = 20;
+    posY = posY + 20;
   }
-  const welcome = k2.make([
-    k2.pos(k2.width() / 2, k2.height() / 2),
-    k2.text("Asteroids are approaching!", {
+  const scoreBoard = k2.make([
+    k2.pos(posX, posY),
+    k2.text("High Score: " + highscore, {
       size: textsize,
+      width: 200,
       font
     }),
-    k2.anchor("center")
+    k2.anchor("center"),
+    { value: 0 }
   ]);
-  welcome.add([
-    k2.pos(0, 40),
-    k2.text("Click to destroy the asteroids.", {
-      size: textsize / 1.5,
-      font
-    }),
-    k2.anchor("center")
-  ]);
-  welcome.add([
-    k2.pos(0, 120),
-    k2.text("Tap the screen to embark on your mission.", {
-      size: textsize / 2,
-      font
-    }),
-    k2.anchor("center")
-  ]);
-  return welcome;
+  return scoreBoard;
 }
-let finalScore = 0;
+function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
+  const direction = k2.vec2(planet.pos.x - posX, planet.pos.y - posY).unit();
+  const octagonPoints = regularPolygon(k2, 25, 20);
+  const astroid = k2.make([
+    k2.sprite(sprite, { anim }),
+    k2.area({ collisionIgnore: ["asteroid"], shape: new k2.Polygon(octagonPoints) }),
+    k2.body(),
+    k2.pos(posX, posY),
+    k2.scale(scale),
+    k2.move(direction, 120),
+    k2.anchor("center"),
+    "asteroid"
+  ]);
+  return astroid;
+}
+function spawnAsteroid(k2, planet, sprite, anim, getScore) {
+  let spawnInterval = 1.5;
+  let mobile = false;
+  if (k2.width() < 640) {
+    mobile = true;
+  }
+  const spawn = () => {
+    let scale = k2.rand(0.8, 2.2);
+    if (k2.width() < 640) {
+      scale = k2.rand(0.6, 1.8);
+    }
+    const offscreenPositions = [
+      { x: k2.rand(0, k2.width()), y: -50 },
+      // Top
+      { x: k2.rand(0, k2.width()), y: k2.height() + 50 },
+      // Bottom
+      { x: -50, y: k2.rand(0, k2.height()) },
+      // Left
+      { x: k2.width() + 50, y: k2.rand(0, k2.height()) }
+      // Right
+    ];
+    const randomPos = offscreenPositions[Math.floor(k2.rand(0, offscreenPositions.length))];
+    const ast = makeAsteroid(k2, planet, sprite, anim, scale, randomPos.x, randomPos.y);
+    k2.add(ast);
+    const score = getScore();
+    if (mobile) {
+      spawnInterval = Math.max(0.9, 2.2 - score / 100);
+    }
+    spawnInterval = Math.max(0.5, 2 - score / 100);
+    k2.wait(spawnInterval, spawn);
+  };
+  k2.wait(spawnInterval, spawn);
+}
+function destroyAsteroid(k2, asteroid, score, sound) {
+  const point = Math.floor(10 / asteroid.scale.x);
+  score.value = score.value + point;
+  score.text = "Score: " + score.value;
+  asteroidExplode(k2, asteroid, "explode", "explode", sound);
+  k2.destroy(asteroid);
+}
+function hit(k2, asteroid, planet, sound) {
+  const damage = Math.round(asteroid.scale.x * 20);
+  k2.shake(damage);
+  k2.play(sound);
+  planet.hurt(damage);
+  k2.destroy(asteroid);
+}
+function asteroidExplode(k2, asteroid, sprite, anim, sound) {
+  const explosion = k2.add([
+    k2.sprite(sprite),
+    k2.pos(asteroid.pos),
+    k2.scale(asteroid.scale.x * 2),
+    k2.anchor("center")
+  ]);
+  explosion.play(anim);
+  k2.play(sound);
+  explosion.onAnimEnd(() => {
+    k2.destroy(explosion);
+  });
+}
+function gameScene() {
+  k.scene("game", () => {
+    k.play("ingameAmbient", {
+      volume: 0.2,
+      loop: true
+    });
+    const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 1);
+    const health = makeHealthbar(k, planet);
+    const scoreBoard = makeScoreBoard(k, "monogram");
+    const highscore = makeHighScore(k, "monogram");
+    k.onCollide("asteroid", "planet", (asteroid, planet2) => {
+      hit(k, asteroid, planet2, "hit");
+    });
+    k.onClick("asteroid", (asteroid) => {
+      destroyAsteroid(k, asteroid, scoreBoard, "hit");
+    });
+    planet.on("death", () => {
+      gameState.finalScore = scoreBoard.value;
+      k.go("gameover");
+    });
+    spawnAsteroid(k, planet, "asteroid", "roll", () => scoreBoard.value);
+    k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
+    k.add(health);
+    k.add(scoreBoard);
+    k.add(highscore);
+    k.add(planet);
+  });
+}
+function usernameScene() {
+  k.scene("username", () => {
+    const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.4);
+    k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
+    k.add(planet);
+    const submitButton = document.getElementById("submit");
+    submitButton.addEventListener("click", () => {
+      const username2 = document.getElementById("usernameInput").value;
+      localStorage.setItem("username", JSON.stringify(username2));
+      const first2 = document.getElementById("first");
+      first2.style.display = "none";
+      k.go("start");
+    });
+  });
+}
 k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
 k.loadSound("hit", "/save-the-planet/sounds/impact.wav");
 k.loadSound("explode", "/save-the-planet/sounds/lazerhit.wav");
@@ -4246,83 +4326,21 @@ k.loadSprite("sound", "/save-the-planet/sprites/icons.png", {
     default: { from: 40, to: 40 }
   }
 });
-k.scene("game", () => {
-  k.play("ingameAmbient", {
-    volume: 0.2,
-    loop: true
-  });
-  const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 1);
-  const health = makeHealthbar(k, planet);
-  const scoreBoard = makeScoreBoard(k, "monogram");
-  const highscore = makeHighScore(k, "monogram");
-  k.onCollide("asteroid", "planet", (asteroid, planet2) => {
-    hit(k, asteroid, planet2, "hit");
-  });
-  k.onClick("asteroid", (asteroid) => {
-    destroyAsteroid(k, asteroid, scoreBoard, "hit");
-  });
-  planet.on("death", () => {
-    finalScore = scoreBoard.value;
-    k.go("gameover");
-  });
-  spawnAsteroid(k, planet, "asteroid", "roll", () => scoreBoard.value);
-  k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
-  k.add(health);
-  k.add(scoreBoard);
-  k.add(highscore);
-  k.add(planet);
-});
-k.scene("gameover", () => {
-  k.play("ingameAmbient", {
-    volume: 0.2,
-    loop: true
-  });
-  const planet = makePlanet(k, "red-planet", k.width() / 2, k.height() / 2, 0.6);
-  const gameover = gameoverText(k, finalScore, "monogram");
-  const restartButton = makeRestartButton(k, "monogram", "Restart");
-  updateHighscore(finalScore);
-  k.add(restartButton);
-  k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
-  k.add(planet);
-  k.add(gameover);
-  restartButton.onClick(() => {
-    k.go("game");
-  });
-});
-k.scene("welcome", () => {
-  k.play("ingameAmbient", {
-    volume: 0.2,
-    loop: true
-  });
-  const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.6);
-  const welcome = makeWelcome(k, "monogram");
-  k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
-  k.add(planet);
-  k.add(welcome);
-  k.onClick(() => {
-    k.go("game");
-  });
-});
-k.scene("first", () => {
-  const planet = makePlanet(k, "planet", k.width() / 2, k.height() / 2, 0.4);
-  k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
-  k.add(planet);
-  const submitButton = document.getElementById("submit");
-  submitButton.addEventListener("click", () => {
-    const username2 = document.getElementById("usernameInput").value;
-    localStorage.setItem("username", JSON.stringify(username2));
-    const first = document.getElementById("first");
-    first.style.display = "none";
-    k.go("welcome");
-  });
-});
+usernameScene();
+startScene();
+gameScene();
+gameoverScene();
 const username = localStorage.getItem("username");
-if (username) {
-  const first = document.getElementById("first");
-  first.style.display = "none";
-  k.go("welcome");
-} else {
-  k.go("first");
-  const first = document.getElementById("first");
-  first.style.display = "flex";
-}
+const first = document.getElementById("first");
+first.style.display = "none";
+k.onLoad(() => {
+  if (username) {
+    const first2 = document.getElementById("first");
+    first2.style.display = "none";
+    k.go("start");
+  } else {
+    k.go("username");
+    const first2 = document.getElementById("first");
+    first2.style.display = "flex";
+  }
+});
