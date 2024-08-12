@@ -56,7 +56,7 @@
     margin: 1rem auto;
     max-width: 80vw;
     max-height: 100vh;
-    box-sizing: border-box; 
+    box-sizing: border-box;
   }
 
   .header {
@@ -93,24 +93,4 @@
   }
 </style>
 
-<script>
-  const scoreres = [
-    {username: "Player1", score: "150"},
-    {username: "Player2", score: "120"},
-    {username: "Player3", score: "110"},
-    {username: "Player4", score: "105"},
-    {username: "Player5", score: "95"},
-    {username: "Player6", score: "85"},
-    {username: "Player7", score: "80"},
-    {username: "Player8", score: "75"},
-    {username: "Player9", score: "70"},
-    {username: "Player10", score: "65"},
-  ]
-  const list = document.querySelector(".scorer");
-
-  scoreres.forEach((player) => {
-    const listItem = document.createElement('li');
-    listItem.textContent = `${player.username} ${player.score}`;
-    list.appendChild(listItem);
-  });
-</script>
+<script src="src/api/scores.ts" type="module"></script>
