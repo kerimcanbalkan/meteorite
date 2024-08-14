@@ -23,7 +23,7 @@ export function gameoverScene() {
 		k.add(gameover);
 
 		restartButton.onClick(() => {
-			k.go("game");
+			k.go("start");
 		})
 
 	});

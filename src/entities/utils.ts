@@ -1,4 +1,5 @@
 import { KaboomCtx } from "kaplay";
+import { postHighscore, Highscore } from "../api/scores";
 
 export function getHighScore(): number {
 	const highscoreStr = localStorage.getItem("highscore");
@@ -17,10 +18,16 @@ export function getHighScore(): number {
 }
 
 export function updateHighscore(newScore: number) {
+	const username = localStorage.getItem("username")?.trim().slice(1, -1);
+	if (!username) {
+		return
+	}
 	const currentHighscore = getHighScore();
 
 	if (newScore > currentHighscore) {
 		localStorage.setItem("highscore", JSON.stringify(newScore));
+		const scorer: Highscore = { username: username, highscore: newScore };
+		postHighscore(scorer);
 	}
 }
 

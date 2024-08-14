@@ -93,4 +93,17 @@
   }
 </style>
 
-<script src="src/api/scores.ts" type="module"></script>
+<script type="module">
+  import {getHighscores} from "./src/api/scores.ts";
+
+  const scores = await getHighscores();
+
+  const list = document.querySelector(".scorer");
+
+  scores.forEach((player) => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${player.username} ${player.highscore}`;
+    list.appendChild(listItem);
+  });
+
+</script>

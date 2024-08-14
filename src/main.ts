@@ -45,14 +45,15 @@ k.loadSprite("sound", "/save-the-planet/sprites/icons.png", {
 	}
 });
 
-usernameScene();
 startScene();
 gameScene();
 gameoverScene();
+usernameScene();
 
-const username = localStorage.getItem("username");
 const first = (<HTMLButtonElement>document.getElementById("first"));
 first.style.display = "none";
+
+const username = localStorage.getItem("username");
 k.onLoad(() => {
 	if (username) {
 		const first = (<HTMLButtonElement>document.getElementById("first"));

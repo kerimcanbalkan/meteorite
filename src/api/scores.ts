@@ -1,43 +1,39 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
-interface Highscore {
+export interface Highscore {
 	username: string
 	highscore: number
 }
 
-let scores: Highscore[] = [];
-
-console.log(apiUrl)
-
-/**
- * Fetches the high scores from the API and updates the `scores` array.
- */
-async function fetchHighscores(): Promise<void> {
+export async function getHighscores(): Promise<Highscore[]> {
+	let data: Highscore[] = [];
 	try {
 		const response = await fetch(apiUrl);
 		if (!response.ok) {
 			throw new Error('Network response was not ok');
 		}
 
-		const data: Highscore[] = await response.json();
-		scores = data;
+		data = await response.json();
+		return data;
 	} catch (error) {
 		console.error('Error fetching highscores:', error);
 	}
+	return data;
 }
 
-// Call the function to fetch and store the high scores
-await fetchHighscores();
-
-console.log(scores);
-
-const list = <HTMLOListElement>document.querySelector(".scorer");
-
-  scores.forEach((player) => {
-    const listItem = document.createElement('li');
-    listItem.textContent = `${player.username} ${player.highscore}`;
-    list.appendChild(listItem);
-  });
-
-export { };
-
+export async function postHighscore(score: Highscore) {
+	try {
+		const response = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(score)
+		})
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+	} catch (error) {
+		console.error('Error posting highscore', error);
+	}
+}
