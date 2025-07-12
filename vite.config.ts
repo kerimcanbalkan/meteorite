@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	base: "/save-the-planet/",
+	base: "/",
 	build: {
 		minify: false,
 	}

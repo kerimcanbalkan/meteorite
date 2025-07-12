@@ -20,17 +20,28 @@ export function makeAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: string
 
 	return astroid;
 }
-export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: string, anim: string, getScore: () => number) {
+
+export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: string, anim: string) {
 	let spawnInterval = 1.5;
 	let mobile = false;
+	let startTime = k.time();  // Capture the starting time
 
 	if (k.width() < 640) {
 		mobile = true;
 	}
 
 	const spawn = () => {
-		let scale = k.rand(0.8, 2.2);
+		// Calculate elapsed time
+		const elapsedTime = k.time() - startTime;
 
+		// Adjust spawn interval based on elapsed time
+		if (mobile) {
+			spawnInterval = Math.max(0.7, 2.2 - elapsedTime / 100); // Decrease interval based on time, min 0.9
+		} else {
+			spawnInterval = Math.max(0.5, 2 - elapsedTime / 100); // Decrease interval based on time, min 0.5
+		}
+
+		let scale = k.rand(0.8, 2.2);
 		if (k.width() < 640) {
 			scale = k.rand(0.6, 1.8);
 		}
@@ -47,21 +58,13 @@ export function spawnAsteroid(k: KaboomCtx, planet: PlanetGameObj, sprite: strin
 		const ast = makeAsteroid(k, planet, sprite, anim, scale, randomPos.x, randomPos.y);
 		k.add(ast);
 
-		// Update the spawn interval based on the score
-		const score = getScore();
-		if (mobile) {
-			spawnInterval = Math.max(0.9, 2.2 - score / 100); // Decrease interval, minimum 0.7 seconds
-		}
-		spawnInterval = Math.max(0.5, 2 - score / 100); // Decrease interval, minimum 0.5 seconds
-
-		// Schedule the next asteroid spawn
+		// Schedule the next asteroid spawn based on the updated spawnInterval
 		k.wait(spawnInterval, spawn);
 	};
 
 	// Start the first spawn
 	k.wait(spawnInterval, spawn);
 }
-
 export function destroyAsteroid(k: KaboomCtx, asteroid: GameObj, score: ScoreBoardGameObj, sound: string) {
 	const point = Math.floor(10 / asteroid.scale.x);
 	score.value = score.value + point;
