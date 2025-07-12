@@ -1,6 +1,6 @@
-# 🌍 Save The Planet
+# 🌍 Meteorite
 
-**Save The Planet** is a 2D pixel art game built using [Kaboom.js](https://kaboomjs.com/) and TypeScript. In this game, you are the guardian of a habitable planet, defending it from an onslaught of meteoroids. The goal is to achieve the highest score by destroying meteoroids before they impact the planet.
+**Meteorite** is a 2D pixel art game built using [Kaboom.js](https://kaboomjs.com/) and TypeScript. In this game, you are the guardian of a habitable planet, defending it from an onslaught of meteoroids. The goal is to achieve the highest score by destroying meteoroids before they impact the planet.
 
 ## 🚀 Gameplay
 
