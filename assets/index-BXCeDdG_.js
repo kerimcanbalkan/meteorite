@@ -3932,6 +3932,11 @@ function getHighScore() {
   }
 }
 function updateHighscore(newScore) {
+  var _a2;
+  const username2 = (_a2 = localStorage.getItem("username")) == null ? void 0 : _a2.trim().slice(1, -1);
+  if (!username2) {
+    return;
+  }
   const currentHighscore = getHighScore();
   if (newScore > currentHighscore) {
     localStorage.setItem("highscore", JSON.stringify(newScore));
@@ -4094,7 +4099,7 @@ function gameoverScene() {
     k.add(planet);
     k.add(gameover);
     restartButton.onClick(() => {
-      k.go("game");
+      k.go("start");
     });
   });
 }
@@ -4183,13 +4188,20 @@ function makeAsteroid(k2, planet, sprite, anim, scale, posX, posY) {
   ]);
   return astroid;
 }
-function spawnAsteroid(k2, planet, sprite, anim, getScore) {
+function spawnAsteroid(k2, planet, sprite, anim) {
   let spawnInterval = 1.5;
   let mobile = false;
+  let startTime = k2.time();
   if (k2.width() < 640) {
     mobile = true;
   }
   const spawn = () => {
+    const elapsedTime = k2.time() - startTime;
+    if (mobile) {
+      spawnInterval = Math.max(0.7, 2.2 - elapsedTime / 100);
+    } else {
+      spawnInterval = Math.max(0.5, 2 - elapsedTime / 100);
+    }
     let scale = k2.rand(0.8, 2.2);
     if (k2.width() < 640) {
       scale = k2.rand(0.6, 1.8);
@@ -4207,11 +4219,6 @@ function spawnAsteroid(k2, planet, sprite, anim, getScore) {
     const randomPos = offscreenPositions[Math.floor(k2.rand(0, offscreenPositions.length))];
     const ast = makeAsteroid(k2, planet, sprite, anim, scale, randomPos.x, randomPos.y);
     k2.add(ast);
-    const score = getScore();
-    if (mobile) {
-      spawnInterval = Math.max(0.9, 2.2 - score / 100);
-    }
-    spawnInterval = Math.max(0.5, 2 - score / 100);
     k2.wait(spawnInterval, spawn);
   };
   k2.wait(spawnInterval, spawn);
@@ -4263,7 +4270,7 @@ function gameScene() {
       gameState.finalScore = scoreBoard.value;
       k.go("gameover");
     });
-    spawnAsteroid(k, planet, "asteroid", "roll", () => scoreBoard.value);
+    spawnAsteroid(k, planet, "asteroid", "roll");
     k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
     k.add(health);
     k.add(scoreBoard);
@@ -4286,53 +4293,53 @@ function usernameScene() {
     });
   });
 }
-k.loadFont("monogram", "/save-the-planet/fonts/monogram.ttf");
-k.loadSound("hit", "/save-the-planet/sounds/impact.wav");
-k.loadSound("explode", "/save-the-planet/sounds/lazerhit.wav");
-k.loadSound("ingameAmbient", "/save-the-planet/sounds/ingameambient2.wav");
-k.loadSprite("space", "/save-the-planet/sprites/space.png");
-k.loadSprite("planet", "/save-the-planet/sprites/planet.png", {
+k.loadFont("monogram", "/fonts/monogram.ttf");
+k.loadSound("hit", "/sounds/impact.wav");
+k.loadSound("explode", "/sounds/lazerhit.wav");
+k.loadSound("ingameAmbient", "/sounds/ingameambient2.wav");
+k.loadSprite("space", "/sprites/space.png");
+k.loadSprite("planet", "/sprites/planet.png", {
   sliceX: 20,
   sliceY: 5,
   anims: {
     "turn": { from: 0, to: 99, speed: 10, loop: true }
   }
 });
-k.loadSprite("asteroid", "/save-the-planet/sprites/asteroid.png", {
+k.loadSprite("asteroid", "/sprites/asteroid.png", {
   sliceX: 20,
   sliceY: 5,
   anims: {
     "roll": { from: 0, to: 99, speed: 20, loop: true }
   }
 });
-k.loadSprite("red-planet", "/save-the-planet/sprites/dry-planet.png", {
+k.loadSprite("red-planet", "/sprites/dry-planet.png", {
   sliceX: 20,
   sliceY: 5,
   anims: {
     "turn": { from: 0, to: 99, speed: 10, loop: true }
   }
 });
-k.loadSprite("explode", "/save-the-planet/sprites/ex.png", {
+k.loadSprite("explode", "/sprites/ex.png", {
   sliceX: 20,
   sliceY: 1,
   anims: {
     "explode": { from: 0, to: 19, speed: 40, loop: false }
   }
 });
-k.loadSprite("sound", "/save-the-planet/sprites/icons.png", {
+k.loadSprite("sound", "/sprites/icons.png", {
   sliceX: 10,
   sliceY: 9,
   anims: {
     default: { from: 40, to: 40 }
   }
 });
-usernameScene();
 startScene();
 gameScene();
 gameoverScene();
-const username = localStorage.getItem("username");
+usernameScene();
 const first = document.getElementById("first");
 first.style.display = "none";
+const username = localStorage.getItem("username");
 k.onLoad(() => {
   if (username) {
     const first2 = document.getElementById("first");
