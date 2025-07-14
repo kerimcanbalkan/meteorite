@@ -32,7 +32,7 @@ export function gameScene() {
 			k.go("gameover");
 		})
 
-		spawnAsteroid(k, planet, "asteroid", "roll", () => scoreBoard.value);
+		spawnAsteroid(k, planet, "asteroid", "roll");
 		k.add([k.sprite("space", { width: k.width(), height: k.height() })]);
 		k.add(health);
 		k.add(scoreBoard);
